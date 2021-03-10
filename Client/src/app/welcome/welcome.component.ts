@@ -1,6 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
+import { MessageType } from '../Enums/MessageType';
+import { ISubscription } from 'rxjs/Subscription';
+import { UserValidResponse } from '../responses/user-valid-reponse.model';
 
 @Component({
   selector: 'app-welcome',
@@ -9,18 +12,31 @@ import { ChatService } from '../chat.service';
 })
 export class WelcomeComponent implements OnInit, OnDestroy {
 
-  userName: string;
-
+  public userName: string;
+  private subscription: ISubscription;
+  public error: boolean;
+  
   constructor(private chat: ChatService, private router: Router) { }
 
-  ngOnInit() {
+  public ngOnDestroy(): void {
+    if (this.subscription)
+      this.subscription.unsubscribe();
   }
 
-  goToRoomSelection() {
+  public ngOnInit(): void {
+    this.subscription = this.chat.messages.subscribe((msg: UserValidResponse) => {
+      if (msg.type === MessageType.SET_USERNAME) {
+        if (msg.isUserValid) {
+          this.router.navigate(['selectRoom']);
+        }
+        else {
+          this.error = true;
+        }
+      }
+    }), (error) => console.log('Error' + error);
+  }
+
+  public setUserName(): void {
     this.chat.setUserName(this.userName);
-    this.router.navigate(['selectRoom']);
-  }
-
-  ngOnDestroy() {
   }
 }

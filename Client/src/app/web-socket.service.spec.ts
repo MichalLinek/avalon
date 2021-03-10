@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { WebsocketService } from './web-socket.service';
+import { WebSocketService } from './web-socket.service';
 
 describe('WebSocketService', () => {
   beforeEach(() => {

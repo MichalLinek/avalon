@@ -1,5 +1,5 @@
-var CharacterDatabase = (function() {
-    var Characters = [{
+export class CharacterDatabase {
+    public static Characters: [{
         //EVIL Characters : 
         Id : 1,
         Name : 'Mordred',
@@ -114,10 +114,4 @@ var CharacterDatabase = (function() {
         Description : 'Loyal servant of Arthur',
         Type : 9
     }];
-
-    return {
-        Characters:Characters
-    }
-})();
-
-module.exports = CharacterDatabase;
+};

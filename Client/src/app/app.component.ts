@@ -11,17 +11,17 @@ export class AppComponent implements OnInit {
   title = 'app';
   constructor(private chat: ChatService, private router: Router) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
   }
 
-  sendMessage() {
+  public sendMessage(): void {
   }
 
-  getUserName() {
+  public getUserName(): string {
     return this.chat.getUserName();
   }
 
-  isUserNameChosen() {
+  public isUserNameChosen(): boolean {
     let userName = this.chat.getUserName();
     return !!userName;
   }

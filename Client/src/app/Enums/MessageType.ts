@@ -6,6 +6,7 @@ export enum MessageType {
     LEAVE_ROOM = 'leaveRoom',
     PLAYERS_IN_ROOM = 'playersInRoom',
     SET_USERNAME = 'setUserName',
+    VALIDATE_USERNAME = "validateUserName",
     PLAYER_UPDATE = 'playerUpdate',
     GAME_START = 'gameStart',
     SENDING_CHARACTER_CARD = 'sendingCharacterCard',

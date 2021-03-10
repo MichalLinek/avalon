@@ -7,7 +7,7 @@ import { MessageType } from './Enums/MessageType';
 import { SocketMessage } from './Models/SocketMessage';
 
 @Injectable()
-export class WebsocketService {
+export class WebSocketService {
 
   private socket;
 
@@ -42,6 +42,11 @@ export class WebsocketService {
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
     const observable = new Observable(observer => {
+      this.socket.on(MessageType.SET_USERNAME, (data) => {
+        console.log('Received message from Websocket Server');
+        observer.next(data);
+      });
+
         this.socket.on(MessageType.INCOMING_MESSAGE, (data) => {
           console.log('Received message from Websocket Server');
           observer.next(data);

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
-import { Subject } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 
 @Component({
@@ -11,12 +10,13 @@ import { ISubscription } from 'rxjs/Subscription';
 })
 export class SelectRoomComponent implements OnInit, OnDestroy {
 
-  availableRooms: string[] = [];
+  public availableRooms: string[] = [];
+
   private subscription: ISubscription;
 
   constructor(private chat: ChatService, private router: Router) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.subscription = this.chat.messages.subscribe(msg => {
       console.log('SelectRoomComponent: ' + msg);
       this.availableRooms = msg.map(x => x.substring('ROOM_'.length)),
@@ -25,20 +25,19 @@ export class SelectRoomComponent implements OnInit, OnDestroy {
     this.chat.sendRequestForRooms();
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  createRoom() {
+  public createRoom(): void {
     this.router.navigate(['createRoom']);
   }
 
-  goBack() {
+  public goBack(): void {
     this.router.navigate(['']);
   }
 
-  joinRoom(roomName) {
-    console.log(roomName);
+  public joinRoom(roomName: string): void {
     this.chat.joinRoom(roomName);
     this.router.navigate(['waitingRoom']);
   }

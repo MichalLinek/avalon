@@ -1,8 +1,8 @@
-const CharacterDatabase = require('./CharacterDatabase');
-const CampaignDatabase = require('./CampaignDatabase');
+import { CharacterDatabase } from "./CharacterDatabase";
+import { CampaignDatabase } from "./CampaignDatabase";
 
-var Game = (function() {
-    var attachCharactersToSockets = function(roomOptions, sockets) {
+export class Game {
+    public static attachCharactersToSockets(roomOptions: any, sockets: any[]) {
         let specialCharacterIds = roomOptions.SpecialCharacters.map(x => x.Id);
         let commonEvil = CharacterDatabase.Characters.filter(x => x.Type === 0).map(x => x.Id);
         let commonGood = CharacterDatabase.Characters.filter(x => x.Type === 1).map(x => x.Id);
@@ -33,7 +33,7 @@ var Game = (function() {
         }
     };
 
-    var addSpecialAbilitiesToCharacters = function (sockets) {
+    public static addSpecialAbilitiesToCharacters(sockets) {
         for (let i = 0 ; i < sockets.length; i++) {
             let otherSockets = sockets.filter(x => x.id != sockets[i].id);
             switch(sockets[i].Character.Type) {
@@ -97,21 +97,13 @@ var Game = (function() {
         
     }
 
-    var getSpecialCharacters = function () {
+    public static getSpecialCharacters() {
         return CharacterDatabase.Characters.filter(x => x.Type > 1);
     }
 
-    var getDefaultCampaign = function(numberOfPlayers) {
+    public static getDefaultCampaign(numberOfPlayers) {
         let campaign = CampaignDatabase.Campaigns.find(x => x.NumberOfPlayers == numberOfPlayers);
         return campaign;
     }
 
-    return {
-        attachCharactersToSockets : attachCharactersToSockets,
-        addSpecialAbilitiesToCharacters : addSpecialAbilitiesToCharacters,
-        getSpecialCharacters : getSpecialCharacters,
-        getDefaultCampaign : getDefaultCampaign
-    }
-}());
-
-module.exports = Game;
+}

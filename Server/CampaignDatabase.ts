@@ -1,5 +1,5 @@
-var CampaignDatabase = (function() {
-    var Campaigns = [
+export class CampaignDatabase {
+    static Campaigns = [
     {
         NumberOfPlayers : 5,
         RecommendedMordredMinions : 2,
@@ -207,9 +207,4 @@ var CampaignDatabase = (function() {
             NumberOfFailsToFailMission : 1
         }]}
     ];
-
-    return {
-        Campaigns:Campaigns
-    }
-})();
-module.exports = CampaignDatabase;
+}

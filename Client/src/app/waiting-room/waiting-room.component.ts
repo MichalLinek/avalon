@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
-import { Room } from '../Models/Room';
 import { ISubscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs';
 import { Player } from '../Models/Player';
 import { MessageType } from '../Enums/MessageType';
 
@@ -20,9 +18,10 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
   private subscription: ISubscription;
   players: Player[] = [];
   displayedColumns: string[] = ['id', 'name', 'ready'];
+
   constructor(private chat: ChatService, private router: Router) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.subscription = this.chat.messages.subscribe(msg => {
       if (msg === MessageType.GAME_START) {
         this.startGame();
@@ -41,29 +40,29 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     console.log(this.chat);
   }
 
-  readyClicked($event): void {
+  public readyClicked($event): void {
     this.ready = $event.checked;
     console.log('ready Clicked !' + this.ready);
     this.chat.sendPlayerUpdate(this.ready);
   }
 
-  requestStartGame() {
+  public requestStartGame() {
     this.chat.startGame();
   }
 
-  startGame() {
+  public startGame(): void {
     this.router.navigate(['gameRoom']);
   }
 
-  goBack() {
+  public goBack(): void {
     this.router.navigate(['selectRoom']);
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  isStartActive() {
+  public isStartActive(): boolean {
     return this.players.filter(x => x.Ready).length === this.maxLimit;
   }
 }

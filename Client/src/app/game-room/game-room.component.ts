@@ -11,7 +11,6 @@ import { MissionVoteDialog } from '../mission-vote-dialog/mission-vote-dialog.co
 import { Mission } from '../Models/Mission';
 import { CompanionVoteDialog } from '../companion-vote.dialog/companion-vote-dialog.component';
 
-
 @Component({
   selector: 'app-game-room',
   templateUrl: './game-room.component.html',
@@ -37,7 +36,7 @@ export class GameRoomComponent implements OnInit {
               private router: Router,
               public dialog: MatDialog) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.subscription = this.chat.messages.subscribe(msg => {
       if (msg.type === 'initGame') {
         this.players = [];
@@ -134,11 +133,11 @@ export class GameRoomComponent implements OnInit {
     this.chat.initGame();
   }
 
-  getImageUrl() {
+  public getImageUrl(): string {
     return 'http://localhost:5000' + this.characterCard.ImageUrl;
   }
 
-  readyClicked($event, playerName: string): void {
+  public readyClicked($event, playerName: string): void {
     const isPlayerOnMission = $event.checked;
     let playerId = this.selectedPlayers.indexOf(playerName);
     if (playerId === -1 && isPlayerOnMission) {
@@ -151,11 +150,11 @@ export class GameRoomComponent implements OnInit {
     this.chat.onMissionApplyUpdate(playerName, isPlayerOnMission);
   }
 
-  ngOnDestroy() {
+  public ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
 
-  CheckboxEnabled(playerName: string): boolean {
+  public CheckboxEnabled(playerName: string): boolean {
     if (!this.afterSelectingCompanions) {
       if (this.players && this.players.length > 0) {
         const player = this.getPlayer();
@@ -166,7 +165,7 @@ export class GameRoomComponent implements OnInit {
     return false;
   }
 
-  IsVoteButtonActive() : boolean {
+  public IsVoteButtonActive() : boolean {
     if (!this.afterSelectingCompanions) {
       if (this.mission) {
         return this.selectedPlayers.length === this.mission.NumberOfCompanions;
@@ -180,12 +179,12 @@ export class GameRoomComponent implements OnInit {
     return this.players.find(x => x.Name  === userName); 
   }
 
-  confirmTeam(): void {
+  public confirmTeam(): void {
     let team = this.selectedPlayers;
     this.chat.startVoting(team);
   }
 
-  openMissionVoteDialog(): void {
+  public openMissionVoteDialog(): void {
     const dialogRef = this.dialog.open(MissionVoteDialog, {
       width: '250px',
       data: {
@@ -203,7 +202,7 @@ export class GameRoomComponent implements OnInit {
     });
   }
 
-  openCompanionVoteDialog(): void {
+  public openCompanionVoteDialog(): void {
     const dialogRef = this.dialog.open(CompanionVoteDialog, {
       width: '250px',
       data: {}
@@ -218,7 +217,7 @@ export class GameRoomComponent implements OnInit {
     });
   }
 
-  playerVoted() : boolean {
+  public playerVoted(): boolean {
     if (this.afterSelectingCompanions) {
       if (this.players && this.players.length) {
         return this.players.find(x => x.Name === this.chat.getUserName()).hasVoted;

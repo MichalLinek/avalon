@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from './web-socket.service';
-import { Observable, Subject } from 'rxjs/Rx';
+import { WebSocketService } from './web-socket.service';
+import { Subject } from 'rxjs/Rx';
 import { SocketMessage } from './Models/SocketMessage';
 import { MessageType } from './Enums/MessageType';
 import { Player } from './Models/Player';
@@ -9,9 +9,9 @@ import { Room } from './Models/Room';
 @Injectable()
 export class ChatService {
 
-  messages: Subject<any>;
+  public messages: Subject<any>;
  
-  constructor(private wsService: WebsocketService) {
+  constructor(private wsService: WebSocketService) {
     this.messages = <Subject<any>>wsService
       .connect()
       .map((response: any): any => {
@@ -19,11 +19,18 @@ export class ChatService {
       });
    }
 
-   getUserName(): string {
+   public getUserName(): string {
      return this.wsService.userName;
    }
 
-  setUserName(userName) {
+  public validateUserName(userName: string): void {
+    const socketMessage = new SocketMessage();
+    socketMessage.MessageType = MessageType.VALIDATE_USERNAME;
+    socketMessage.Content = userName;
+    this.messages.next(socketMessage);
+  }
+
+  public setUserName(userName) {
     this.wsService.userName = userName;
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.SET_USERNAME;
