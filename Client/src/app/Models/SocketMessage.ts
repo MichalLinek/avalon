@@ -1,6 +1,6 @@
-import { MessageType } from '../Enums/MessageType';
+import { MessageType } from '../../../../Common/constants/Enums/MessageType';
 
 export class SocketMessage {
-    MessageType: MessageType;
-    Content: any;
+    public MessageType: MessageType;
+    public Content: any;
 }

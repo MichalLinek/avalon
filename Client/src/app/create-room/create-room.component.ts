@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
 import { Room } from '../Models/Room';
 import { ISubscription } from 'rxjs/Subscription';
-import { CharacterCard } from '../Models/CharacterCard';
-import { MessageType } from '../Enums/MessageType';
+import { CharacterCard } from '../../../../Common/db/CharacterCard';
+import { MessageType } from '../../../../Common/constants/Enums/MessageType';
 import { Mission } from '../Models/Mission';
+import { NavigationPaths } from '../helpers/navigation-paths';
 
 @Component({
   selector: 'app-create-room',
@@ -40,11 +41,11 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   public createRoom(): void {
     this.room.NumberOfPlayers = 1;
     this.chat.createNewRoom(this.room);
-    this.router.navigate(['waitingRoom']);
+    this.router.navigate([NavigationPaths.waitingRoom]);
   }
 
   public goBack(): void {
-    this.router.navigate(['selectRoom']);
+    this.router.navigate([NavigationPaths.selectRoom]);
   }
 
   public ngOnDestroy(): void {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { WebSocketService } from './web-socket.service';
 import { Subject } from 'rxjs/Rx';
 import { SocketMessage } from './Models/SocketMessage';
-import { MessageType } from './Enums/MessageType';
+import { MessageType } from '../../../Common/constants/Enums/MessageType';
 import { Player } from './Models/Player';
 import { Room } from './Models/Room';
 

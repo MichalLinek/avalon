@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
 import { ISubscription } from 'rxjs/Subscription';
 import { Player } from '../Models/Player';
-import { MessageType } from '../Enums/MessageType';
+import { MessageType } from '../../../../Common/constants/Enums/MessageType';
+import { NavigationPaths } from '../helpers/navigation-paths';
 
 @Component({
   selector: 'app-waiting-room',
@@ -51,11 +52,11 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
   }
 
   public startGame(): void {
-    this.router.navigate(['gameRoom']);
+    this.router.navigate([NavigationPaths.gameRoom]);
   }
 
   public goBack(): void {
-    this.router.navigate(['selectRoom']);
+    this.router.navigate([NavigationPaths.selectRoom]);
   }
 
   public ngOnDestroy(): void {

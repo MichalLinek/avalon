@@ -1,7 +1,7 @@
 import  { Request, Response } from 'express';
 import ioserver, { Socket } from 'socket.io';
 import { Game } from './game';
-
+import { UserValidResponse } from "./../Common/responses/user-valid-reponse.model";
 let path = require('path');
 let express = require('express');
 let app = express();
@@ -103,7 +103,9 @@ constructor() {
                 socket["userName"] = uName;
             }
             console.log(valid + 'isValid');
-            socket.emit('setUserName', { type: 'setUserName', isUserValid : valid });
+            const response: UserValidResponse = { type: 'setUserName', isUserValid : valid }
+
+            socket.emit('setUserName', response);
         });
 
         socket.on('joinRoom', (data) => {

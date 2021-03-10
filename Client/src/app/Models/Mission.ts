@@ -1,6 +1,6 @@
 export class Mission {
-    Id: number;
-    NumberOfCompanions: number;
-    NumberOfFailsToFailMission: number;
-    IsSuccess?: boolean;
+    public Id: number;
+    public NumberOfCompanions: number;
+    public NumberOfFailsToFailMission: number;
+    public IsSuccess?: boolean;
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
 import { ISubscription } from 'rxjs/Subscription';
+import { NavigationPaths } from '../helpers/navigation-paths';
 
 @Component({
   selector: 'app-select-room',
@@ -30,15 +31,15 @@ export class SelectRoomComponent implements OnInit, OnDestroy {
   }
 
   public createRoom(): void {
-    this.router.navigate(['createRoom']);
+    this.router.navigate([NavigationPaths.createRoom]);
   }
 
   public goBack(): void {
-    this.router.navigate(['']);
+    this.router.navigate([NavigationPaths.home]);
   }
 
   public joinRoom(roomName: string): void {
     this.chat.joinRoom(roomName);
-    this.router.navigate(['waitingRoom']);
+    this.router.navigate([NavigationPaths.waitingRoom]);
   }
 }

@@ -1,11 +1,11 @@
-import { CharacterDatabase } from "./CharacterDatabase";
+import { CharactersDB } from "../Common/db/CharactersDB";
 import { CampaignDatabase } from "./CampaignDatabase";
 
 export class Game {
     public static attachCharactersToSockets(roomOptions: any, sockets: any[]) {
         let specialCharacterIds = roomOptions.SpecialCharacters.map(x => x.Id);
-        let commonEvil = CharacterDatabase.Characters.filter(x => x.Type === 0).map(x => x.Id);
-        let commonGood = CharacterDatabase.Characters.filter(x => x.Type === 1).map(x => x.Id);
+        let commonEvil = CharactersDB.filter(x => x.Type === 0).map(x => x.Id);
+        let commonGood = CharactersDB.filter(x => x.Type === 1).map(x => x.Id);
         let i = roomOptions.NumberOfEvil;
         let randomNormalGoodCharacterIds = [];
         let randomNormalEvilCharacterIds = [];
@@ -27,7 +27,7 @@ export class Game {
         
         for (let i = 0 ; i < sockets.length; i++) {
             let selectedId = Math.floor(Math.random() * allIds.length);
-            let selectedCharacter = CharacterDatabase.Characters.filter(x => x.Id === allIds[selectedId])[0];
+            let selectedCharacter = CharactersDB.filter(x => x.Id === allIds[selectedId])[0];
             sockets[i].Character = selectedCharacter;
             allIds.splice(selectedId, 1);
         }
@@ -98,7 +98,7 @@ export class Game {
     }
 
     public static getSpecialCharacters() {
-        return CharacterDatabase.Characters.filter(x => x.Type > 1);
+        return CharactersDB.filter(x => x.Type > 1);
     }
 
     public static getDefaultCampaign(numberOfPlayers) {

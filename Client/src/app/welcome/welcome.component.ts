@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
-import { MessageType } from '../Enums/MessageType';
+import { MessageType } from '../../../../Common/constants/Enums/MessageType';
 import { ISubscription } from 'rxjs/Subscription';
-import { UserValidResponse } from '../responses/user-valid-reponse.model';
+import { UserValidResponse } from '../../../../Common/responses/user-valid-reponse.model';
+import { NavigationPaths } from '../helpers/navigation-paths';
 
 @Component({
   selector: 'app-welcome',
@@ -27,7 +28,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
     this.subscription = this.chat.messages.subscribe((msg: UserValidResponse) => {
       if (msg.type === MessageType.SET_USERNAME) {
         if (msg.isUserValid) {
-          this.router.navigate(['selectRoom']);
+          this.router.navigate([NavigationPaths.selectRoom]);
         }
         else {
           this.error = true;

@@ -4,7 +4,7 @@ import { ChatService } from '../chat.service';
 import { Room } from '../Models/Room';
 import { ISubscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs';
-import { CharacterCard } from '../Models/CharacterCard';
+import { CharacterCard } from '../../../../Common/db/CharacterCard'
 import { Player } from '../Models/Player';
 import { MatDialog } from '@angular/material';
 import { MissionVoteDialog } from '../mission-vote-dialog/mission-vote-dialog.component';

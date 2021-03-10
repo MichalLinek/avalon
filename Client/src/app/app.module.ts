@@ -18,13 +18,14 @@ import { SafePipe } from './pipes/SafePipe';
 import { MissionVoteDialog } from './mission-vote-dialog/mission-vote-dialog.component';
 import { CompanionVoteDialog } from './companion-vote.dialog/companion-vote-dialog.component';
 import { AuthGuard } from './helpers/auth-guard';
+import { NavigationPaths } from './helpers/navigation-paths';
 
 const routes: Routes = [
-  { path: '', component: WelcomeComponent },
-  { path: 'selectRoom', component: SelectRoomComponent, canActivate: [AuthGuard]},
-  { path: 'createRoom', component: CreateRoomComponent, canActivate: [AuthGuard] },
-  { path: 'waitingRoom', component: WaitingRoomComponent, canActivate: [AuthGuard]},
-  { path: 'gameRoom', component : GameRoomComponent,  canActivate: [AuthGuard]}
+  { path: NavigationPaths.home, component: WelcomeComponent },
+  { path: NavigationPaths.selectRoom, component: SelectRoomComponent, canActivate: [AuthGuard]},
+  { path: NavigationPaths.createRoom, component: CreateRoomComponent, canActivate: [AuthGuard] },
+  { path: NavigationPaths.waitingRoom, component: WaitingRoomComponent, canActivate: [AuthGuard]},
+  { path: NavigationPaths.gameRoom, component : GameRoomComponent,  canActivate: [AuthGuard]}
 ];
 
 @NgModule({
