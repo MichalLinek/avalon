@@ -5,7 +5,7 @@ import { Room } from '../Models/Room';
 import { ISubscription } from 'rxjs/Subscription';
 import { CharacterCard } from '../../../../Common/db/CharacterCard';
 import { MessageType } from '../../../../Common/constants/Enums/MessageType';
-import { Mission } from '../Models/Mission';
+import { Mission } from '../../../../Common/models/mission.model';
 import { NavigationPaths } from '../helpers/navigation-paths';
 
 @Component({
@@ -30,7 +30,7 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
         if (msg.Type === MessageType.GET_SPECIAL_CHARACTERS) {
           this.specialCharacters = msg.data;
         } else if (msg.Type === MessageType.GET_DEFAULT_CAMPAIGN) {
-        this.room.Campaign = msg.data;
+        this.room.campaign = msg.data;
         }
       }
     });
@@ -39,7 +39,7 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   }
 
   public createRoom(): void {
-    this.room.NumberOfPlayers = 1;
+    this.room.numberOfPlayers = 1;
     this.chat.createNewRoom(this.room);
     this.router.navigate([NavigationPaths.waitingRoom]);
   }
@@ -58,31 +58,31 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   }
 
   public setNumberOfPlayers(): void {
-    this.numberOfPlayers = this.room.SpecialCharacters.length + this.room.NumberOfEvil + this.room.NumberOfGood;
-      this.chat.getDefaultCampaign(this.numberOfPlayers);
+    this.numberOfPlayers = this.room.specialCharacters.length + this.room.numberOfEvil + this.room.numberOfGood;
+    this.chat.getDefaultCampaign(this.numberOfPlayers);
   }
 
   public decreaseCompanions(mission: Mission): void {
-    if (mission.NumberOfCompanions > 1) {
-      mission.NumberOfCompanions--;
+    if (mission.numberOfCompanions > 1) {
+      mission.numberOfCompanions--;
     }
   }
 
   public increaseCompanions(mission: Mission): void {
-    if (mission.NumberOfCompanions < 5) {
-      mission.NumberOfCompanions++;
+    if (mission.numberOfCompanions < 5) {
+      mission.numberOfCompanions++;
     }
   }
 
   public decreaseFailures(mission: Mission): void {
-    if (mission.NumberOfFailsToFailMission > 1) {
-      mission.NumberOfFailsToFailMission--;
+    if (mission.numberOfFailsToFailMission > 1) {
+      mission.numberOfFailsToFailMission--;
     }
   }
 
   public increaseFailures(mission: Mission): void {
-    if (mission.NumberOfFailsToFailMission < 3) {
-      mission.NumberOfFailsToFailMission++;
+    if (mission.numberOfFailsToFailMission < 3) {
+      mission.numberOfFailsToFailMission++;
     }
   }
 }

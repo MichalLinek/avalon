@@ -2,70 +2,72 @@ import { CharacterCard } from './CharacterCard';
 import { AlignmentType } from '../constants/Enums/AlignmentType';
 import { CharacterType } from '../constants/Enums/CharacterType';
 
+const relativePath = "../../Common/images/characters/";
+
 export const CharactersDB: Array<CharacterCard> = new Array<CharacterCard>({
         // EVIL Characters :
-        Id : 1,
-        Name : 'Mordred',
-        ImageUrl : '/images/characters/evil/Mordred.png',
-        Alignment : AlignmentType.Evil,
-        Description : 'Unknown to Merlin',
-        Type : CharacterType.Mordred,
-        AdditionalInfo : ''
+        id : 1,
+        name : 'Mordred',
+        imageUrl : relativePath + 'evil/Mordred.png',
+        alignment : AlignmentType.Evil,
+        description : 'Unknown to Merlin',
+        type : CharacterType.Mordred,
+        additionalInfo : ''
     }, {
-        Id : 2,
-        Name : 'Assassin',
-        ImageUrl : '/images/characters/evil/Assassin.png',
-        Alignment : AlignmentType.Evil,
-        Description : 'Minion of Mordred',
-        Type : CharacterType.Assassin,
-        AdditionalInfo : ''
+        id : 2,
+        name : 'Assassin',
+        imageUrl : relativePath + 'evil//Assassin.png',
+        alignment : AlignmentType.Evil,
+        description : 'Minion of Mordred',
+        type : CharacterType.Assassin,
+        additionalInfo : ''
     }, {
-        Id : 3,
-        Name : 'Lancelot',
-        ImageUrl : '/images/characters/evil/Lancelot.png',
-        Alignment : AlignmentType.Evil,
-        Description : 'Minion of Mordred',
-        Type : CharacterType.LancelotEvil,
-        AdditionalInfo : ''
+        id : 3,
+        name : 'Lancelot',
+        imageUrl : relativePath + 'evil/Lancelot.png',
+        alignment : AlignmentType.Evil,
+        description : 'Minion of Mordred',
+        type : CharacterType.LancelotEvil,
+        additionalInfo : ''
     }, {
-        Id : 7,
-        Name : 'Morgana',
-        ImageUrl : '/images/characters/evil/Morgana.png',
-        Alignment : AlignmentType.Evil,
-        Description : 'Appears as Merlin',
-        Type : CharacterType.Morgana,
-        AdditionalInfo : ''
+        id : 7,
+        name : 'Morgana',
+        imageUrl : relativePath + 'evil/Morgana.png',
+        alignment : AlignmentType.Evil,
+        description : 'Appears as Merlin',
+        type : CharacterType.Morgana,
+        additionalInfo : ''
     }, {
-        Id : 8,
-        Name : 'Oberon',
-        ImageUrl : '/images/characters/evil/Oberon.png',
-        Alignment : AlignmentType.Evil,
-        Description : 'Unknown to Evil',
-        Type : CharacterType.Oberon,
-        AdditionalInfo : ''
+        id : 8,
+        name : 'Oberon',
+        imageUrl : relativePath + 'evil/Oberon.png',
+        alignment : AlignmentType.Evil,
+        description : 'Unknown to Evil',
+        type : CharacterType.Oberon,
+        additionalInfo : ''
     }, {
         // GOOD Characters :
-        Id : 9,
-        Name : 'Merlin',
-        ImageUrl : '/images/characters/good/Merlin.png',
-        Alignment : AlignmentType.Good,
-        Description : 'Knows evil, must remain hidden',
-        Type : CharacterType.Merlin,
-        AdditionalInfo : ''
+        id : 9,
+        name : 'Merlin',
+        imageUrl : relativePath + 'good/Merlin.png',
+        alignment : AlignmentType.Good,
+        description : 'Knows evil, must remain hidden',
+        type : CharacterType.Merlin,
+        additionalInfo : ''
     }, {
-        Id : 10,
-        Name : 'Lancelot',
-        ImageUrl : '/images/characters/good/Lancelot.png',
-        Alignment : AlignmentType.Good,
-        Description : 'Loyal servant of Arthur',
-        Type : CharacterType.LancelotGood,
-        AdditionalInfo : ''
+        id : 10,
+        name : 'Lancelot',
+        imageUrl : relativePath + 'good/Lancelot.png',
+        alignment : AlignmentType.Good,
+        description : 'Loyal servant of Arthur',
+        type : CharacterType.LancelotGood,
+        additionalInfo : ''
     }, {
-        Id : 16,
-        Name : 'Percival',
-        ImageUrl : '/images/characters/good/Percival.png',
-        Alignment : AlignmentType.Good,
-        Description : 'Loyal servant of Arthur',
-        Type : CharacterType.Percival,
-        AdditionalInfo : ''
+        id : 16,
+        name : 'Percival',
+        imageUrl : relativePath + 'good/Percival.png',
+        alignment : AlignmentType.Good,
+        description : 'Loyal servant of Arthur',
+        type : CharacterType.Percival,
+        additionalInfo : ''
     });

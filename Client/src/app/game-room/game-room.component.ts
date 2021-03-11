@@ -8,7 +8,7 @@ import { CharacterCard } from '../../../../Common/db/CharacterCard'
 import { Player } from '../Models/Player';
 import { MatDialog } from '@angular/material';
 import { MissionVoteDialog } from '../mission-vote-dialog/mission-vote-dialog.component';
-import { Mission } from '../Models/Mission';
+import { Mission } from '../../../../Common/models/mission.model';
 import { CompanionVoteDialog } from '../companion-vote.dialog/companion-vote-dialog.component';
 
 @Component({
@@ -42,7 +42,7 @@ export class GameRoomComponent implements OnInit {
         this.players = [];
         this.currentMission = 0;
         this.mission = msg.mission;
-        this.missions = msg.campaign.Missions;
+        this.missions = msg.campaign.missions;
         let players = msg.players;
         for (let i = 0 ; i < players.length; i++) {
           this.players.push(
@@ -134,7 +134,7 @@ export class GameRoomComponent implements OnInit {
   }
 
   public getImageUrl(): string {
-    return 'http://localhost:5000' + this.characterCard.ImageUrl;
+    return 'http://localhost:5000' + this.characterCard.imageUrl;
   }
 
   public readyClicked($event, playerName: string): void {
@@ -158,7 +158,7 @@ export class GameRoomComponent implements OnInit {
     if (!this.afterSelectingCompanions) {
       if (this.players && this.players.length > 0) {
         const player = this.getPlayer();
-        return player.IsLeader && (this.selectedPlayers.indexOf(playerName) > -1 || this.selectedPlayers.length < this.mission.NumberOfCompanions);
+        return player.IsLeader && (this.selectedPlayers.indexOf(playerName) > -1 || this.selectedPlayers.length < this.mission.numberOfCompanions);
       }
     }
     
@@ -168,7 +168,7 @@ export class GameRoomComponent implements OnInit {
   public IsVoteButtonActive() : boolean {
     if (!this.afterSelectingCompanions) {
       if (this.mission) {
-        return this.selectedPlayers.length === this.mission.NumberOfCompanions;
+        return this.selectedPlayers.length === this.mission.numberOfCompanions;
       }
     }
     return false;

@@ -3,6 +3,7 @@ import { WebSocketService } from './web-socket.service';
 import { Subject } from 'rxjs/Rx';
 import { SocketMessage } from './Models/SocketMessage';
 import { MessageType } from '../../../Common/constants/Enums/MessageType';
+import { UserValidRequest } from "../../../Common/requests/user-valid-request.model";
 import { Player } from './Models/Player';
 import { Room } from './Models/Room';
 
@@ -34,7 +35,9 @@ export class ChatService {
     this.wsService.userName = userName;
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.SET_USERNAME;
-    socketMessage.Content = userName;
+    let request =  new UserValidRequest();
+    request.userName = userName;
+    socketMessage.Content = request;
     this.messages.next(socketMessage);
   }
 

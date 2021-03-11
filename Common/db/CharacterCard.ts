@@ -2,11 +2,11 @@ import { AlignmentType } from '../constants/Enums/AlignmentType';
 import { CharacterType } from '../constants/Enums/CharacterType';
 
 export class CharacterCard {
-    public Id: number;
-    public Name: string;
-    public ImageUrl: string;
-    public Alignment: AlignmentType;
-    public Description: string;
-    public Type: CharacterType;
-    public AdditionalInfo: string;
+    public id: number;
+    public name: string;
+    public imageUrl: string;
+    public alignment: AlignmentType;
+    public description: string;
+    public type: CharacterType;
+    public additionalInfo: string;
 }

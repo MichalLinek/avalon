@@ -1,11 +1,13 @@
-import { CharactersDB } from "../Common/db/CharactersDB";
+import { Socket } from "socket.io";
+import { CharactersDB } from "../../Common/db/CharactersDB";
 import { CampaignDatabase } from "./CampaignDatabase";
+import { Campaign } from "../../Common/models/campaign.model";
 
 export class Game {
-    public static attachCharactersToSockets(roomOptions: any, sockets: any[]) {
-        let specialCharacterIds = roomOptions.SpecialCharacters.map(x => x.Id);
-        let commonEvil = CharactersDB.filter(x => x.Type === 0).map(x => x.Id);
-        let commonGood = CharactersDB.filter(x => x.Type === 1).map(x => x.Id);
+    public static attachCharactersToSockets(roomOptions: any, sockets: Socket[]) {
+        let specialCharacterIds = roomOptions.SpecialCharacters.map(x => x.id);
+        let commonEvil = CharactersDB.filter(x => x.type === 0).map(x => x.id);
+        let commonGood = CharactersDB.filter(x => x.type === 1).map(x => x.id);
         let i = roomOptions.NumberOfEvil;
         let randomNormalGoodCharacterIds = [];
         let randomNormalEvilCharacterIds = [];
@@ -33,7 +35,7 @@ export class Game {
         }
     };
 
-    public static addSpecialAbilitiesToCharacters(sockets) {
+    public static addSpecialAbilitiesToCharacters(sockets: Socket[]) {
         for (let i = 0 ; i < sockets.length; i++) {
             let otherSockets = sockets.filter(x => x.id != sockets[i].id);
             switch(sockets[i].Character.Type) {
@@ -98,11 +100,11 @@ export class Game {
     }
 
     public static getSpecialCharacters() {
-        return CharactersDB.filter(x => x.Type > 1);
+        return CharactersDB.filter(x => x.type > 1);
     }
 
-    public static getDefaultCampaign(numberOfPlayers) {
-        let campaign = CampaignDatabase.Campaigns.find(x => x.NumberOfPlayers == numberOfPlayers);
+    public static getDefaultCampaign(numberOfPlayers: number): Campaign | undefined {
+        let campaign = CampaignDatabase.Campaigns.find(x => x.numberOfPlayers == numberOfPlayers);
         return campaign;
     }
 
