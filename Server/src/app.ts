@@ -1,9 +1,12 @@
-import { Socket } from 'socket.io';
+import { Room, Socket } from 'socket.io';
 import { Game } from './game';
 import { UserValidResponse } from "./../../Common/responses/user-valid-reponse.model";
+import { GameRoomCreateResponse } from "./../../Common/responses/game-room-create-response.model";
 import { UserValidRequest } from "./../../Common/requests/user-valid-request.model";
+import { GameRoomCreateRequest } from "./../../Common/requests/game-room-create-request.model";
 import { MessageType } from "../../Common/constants/Enums/MessageType";
 import { GameRoom } from "./models/game-room.model";
+import { GameDetailsResponse } from "../../Common/responses/game-details-response.model";
 import { Player } from './models/player.model';
 
 let path = require('path');
@@ -16,7 +19,7 @@ var dir = path.join(__dirname, 'images');
 app.use('/images', express.static(dir));
 
 export class Server { 
-    private rooms: GameRoom[] = [];
+    private rooms = new Map<string, GameRoom>();
     private activeUsers = new Map<string, Player>();
     private nickNames = new Set();
     private roomPrefix = 'ROOM_';
@@ -28,26 +31,36 @@ export class Server {
         return this.activeUsers.get(socketId);
     }
 
+    private getPlayersRoomId(socketId?: string): string | null {
+        if (socketId == null) return null;
+        let player = this.getPlayerFromSocket(socketId);
+        if (player && player.roomId && this.rooms.has(player.roomId)) {
+            return player.roomId;
+        }
+        return null;
+    }
+
     constructor() {
         io.on('reconnection', (socket: Socket) => {
             console.log('some reconnection performed');
         });
 
-        io.on('connection', (socket: Socket & { userName: string}) => {
+        io.on('connection', (socket: Socket) => {
             console.log('user connected');
 
             socket.on('disconnect', () =>  {
-                const room = null;
+                let roomId = null;
                 if (this.activeUsers.has(socket.id)) {
                     let user = this.activeUsers.get(socket.id);
+                    roomId = this.getPlayersRoomId(socket.id);
                     this.activeUsers.delete(socket.id);
                     this.nickNames.delete(user!.userName.toLocaleLowerCase());
                 } 
                 console.log('user disconnected');
 
-                if (socket["roomName"]) {
-                    console.log('do something with room');
-                    this.playerInRoomsChanged(socket["roomName"]);
+                
+                if (roomId) {
+                    this.playerInRoomsChanged(roomId);
                 }
             });
 
@@ -67,28 +80,56 @@ export class Server {
             });
 
             socket.on('message', (message) => {
-                let parsedMsg = JSON.parse(message);
-                let msg = parsedMsg.clientId + ' ' + parsedMsg.content;
-                socket["userName"] = parsedMsg.userName;
-                io.emit('message', msg);    
+                // let parsedMsg = JSON.parse(message);
+                // let msg = parsedMsg.clientId + ' ' + parsedMsg.content;
+                // socket["userName"] = parsedMsg.userName;
+                // io.emit('message', msg);    
             });
 
-            socket.on('createRoom', (room) => {
-                
-                let roomParsed = JSON.parse(room);
-                let roomNameWithPrefix = this.roomPrefix + roomParsed.name;
-                let player = this.getPlayerFromSocket(socket.id);
-                player!.roomId = roomNameWithPrefix;
-                socket.join(roomNameWithPrefix);
-                console.log('our player:');
-                console.log(player);
-                socket["roomName"] = roomNameWithPrefix;
-                let foundRoom = io.sockets.adapter.rooms[roomNameWithPrefix];
-                console.log('Our room:');
-                console.log(foundRoom);
-                console.log(io.sockets.adapter.rooms)
-                //foundRoom["GameOptions"] = roomParsed;
-                //io.sockets.in(roomNameWithPrefix).emit('New user connected to room');
+            socket.on(MessageType.GET_GAME_DETAILS, () => {
+                console.log('write output');
+                let characters = Game.getSpecialCharacters();
+                let campaigns = Game.getDefaultCampaigns();
+
+                let response: GameDetailsResponse = {
+                    defaultCampaigns: campaigns,
+                    specialCharacters: characters,
+                    type: MessageType.GET_GAME_DETAILS
+                }
+                socket.emit(MessageType.GET_GAME_DETAILS, response);
+            });
+
+            socket.on('getSpecialCharacters', (data) => {
+                let characters = Game.getSpecialCharacters();
+                socket.emit('getSpecialCharacters', { Type: 'getSpecialCharacters', data : characters });
+            });
+
+            socket.on('getDefaultCampaign', (data) => {
+                console.log('here');
+                let numberOfPlayers = data;
+                let campaign = Game.getDefaultCampaign(numberOfPlayers);
+                socket.emit('getDefaultCampaign', { Type: 'getDefaultCampaign', data : campaign });
+            });
+
+            socket.on(MessageType.CREATE_ROOM, (request: string) => {
+                console.log(request);
+                let parsedRequest: GameRoomCreateRequest = JSON.parse(request as string);
+                const roomId = this.roomPrefix + parsedRequest.gameRoom.name;
+                let response: GameRoomCreateResponse = {
+                    isRoomCreated: true,
+                    type: MessageType.CREATE_ROOM
+                }
+                if (this.rooms.has(roomId)) {
+                    response.isRoomCreated = false;
+                }
+                else {
+                    this.rooms.set(roomId, parsedRequest.gameRoom);
+                    let player = this.getPlayerFromSocket(socket.id);
+                    player!.roomId = roomId;
+                    socket.join(roomId);
+                }
+
+                socket.emit(MessageType.CREATE_ROOM, response);
             });
 
             socket.on(MessageType.SET_USERNAME, (request: UserValidRequest) => {
@@ -116,13 +157,14 @@ export class Server {
             socket.on('joinRoom', (data) => {
                 let roomNameWithPrefix = this.roomPrefix + JSON.parse(data);
                 socket.join(roomNameWithPrefix);
-                
-                socket["roomName"] = roomNameWithPrefix;
-                let foundRoom = io.sockets.adapter.rooms[roomNameWithPrefix];
+                let player = this.getPlayerFromSocket(socket.id);
+                player!.roomId = roomNameWithPrefix;
             });
 
             socket.on('gameStart', (data) => {
-                let room = socket["roomName"];
+                let player = this.getPlayerFromSocket(socket.id);
+                if (!player) return;
+                let room = player.roomId;
                 io.sockets.in(room).emit('gameStart', '');
                     
                 setTimeout(function() { this.sendCharacterCardsToSockets(room); }, 2000);
@@ -135,20 +177,20 @@ export class Server {
                 let foundSocket = sockets.filter(x => x.userName === player.Name)[0];
                 
                 if (foundSocket) {
-                    foundSocket.Ready = player.Ready;
+                    foundSocket.ready = player.ready;
                     let updatedPlayers = [];
                     for(let i = 0 ; i < sockets.length; i ++ ) {
                         updatedPlayers.push(
                         {
                             Name : sockets[i].userName,
-                            Ready : sockets[i].Ready
+                            Ready : sockets[i].ready
                         });
                     }
 
                     let room = io.sockets.adapter.rooms[roomWithPrefix];
                     if (room) {
                         let socketsLimit = room["GameOptions"].playersLimit;
-                        let maxLimitOfPlayers = room["GameOptions"].NumberOfGood + room["GameOptions"].NumberOfEvil + room["GameOptions"].SpecialCharacters.length;
+                        let maxLimitOfPlayers = room["GameOptions"].numberOfGood + room["GameOptions"].numberOfEvil + room["GameOptions"].specialCharacters.length;
                         let data = { players: updatedPlayers, availablePlayers: sockets.length, maxLimit: maxLimitOfPlayers};
                         io.sockets.in(roomWithPrefix).emit('playersInRoom', data);
                     }
@@ -171,6 +213,7 @@ export class Server {
             });
 
             socket.on('missionChanged', (playerMission) => {
+                
                 if (socket["roomName"]) {
                     let parsedPlayerMission = JSON.parse(playerMission);
                     let roomName = socket["roomName"];
@@ -180,17 +223,7 @@ export class Server {
                 }
             });
 
-            socket.on('getSpecialCharacters', (data) => {
-                let characters = Game.getSpecialCharacters();
-                socket.emit('getSpecialCharacters', { Type: 'getSpecialCharacters', data : characters });
-            });
-
-            socket.on('getDefaultCampaign', (data) => {
-                console.log('here');
-                let numberOfPlayers = data;
-                let campaign = Game.getDefaultCampaign(numberOfPlayers);
-                socket.emit('getDefaultCampaign', { Type: 'getDefaultCampaign', data : campaign });
-            });
+            
 
             socket.on('voteForTeam', (data) => {
                 console.log('voteForTeam Start');
@@ -341,9 +374,9 @@ export class Server {
         }); 
     }
 
-    public sendCharacterCardsToSockets(room): void {
-        let sockets = this.getUsersInRoom(room);
-        let foundRoom = io.sockets.adapter.rooms[room];
+    public sendCharacterCardsToSockets(roomId: string): void {
+        let sockets = this.getUsersInRoom(roomId);
+        let foundRoom = io.sockets.adapter.rooms[roomId];
         Game.attachCharactersToSockets(foundRoom["GameOptions"], sockets);
         Game.addSpecialAbilitiesToCharacters(sockets);
         
@@ -357,7 +390,7 @@ export class Server {
         return !this.nickNames.has(userName);
     }
 
-    public getUsersInRoom(roomId) {
+    public getUsersInRoom(roomId: string): Player[] {
         var outputlist = [];
         if (io.sockets.adapter.rooms[roomId]) {
             var clients_in_the_room = io.sockets.adapter.rooms[roomId].sockets; 
@@ -368,8 +401,8 @@ export class Server {
         return outputlist; 
     }
 
-    public playerInRoomsChanged(room): void {
-        let sockets = this.getUsersInRoom(room);
+    public playerInRoomsChanged(roomId: string): void {
+        let sockets = this.getUsersInRoom(roomId);
         let updatedPlayers = [];
 
         for(let i = 0 ; i < sockets.length; i ++ ) {
@@ -380,16 +413,16 @@ export class Server {
             });
         }
 
-        let roomOptions = io.sockets.adapter.rooms[room];
+        let roomOptions = io.sockets.adapter.rooms[roomId];
         if (roomOptions) {
-            let maxLimitOfPlayers = roomOptions["GameOptions"].NumberOfGood + roomOptions["GameOptions"].NumberOfEvil + roomOptions["GameOptions"].SpecialCharacters.length;
+            let maxLimitOfPlayers = roomOptions["GameOptions"].numberOfGood + roomOptions["GameOptions"].numberOfEvil + roomOptions["GameOptions"].specialCharacters.length;
             let data = { players: updatedPlayers, availablePlayers: sockets.length, maxLimit: maxLimitOfPlayers};
-            io.sockets.in(room).emit('playersInRoom', data);
+            io.sockets.in(roomId).emit('playersInRoom', data);
         }
     }
 
-    public initGame (room) {
-        let sockets = this.getUsersInRoom(room);
+    public initGame (roomId: string) {
+        let sockets = this.getUsersInRoom(roomId);
         let updatedPlayers = [];
 
         for(let i = 0 ; i < sockets.length; i ++ ) {

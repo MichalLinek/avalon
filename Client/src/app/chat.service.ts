@@ -4,8 +4,10 @@ import { Subject } from 'rxjs/Rx';
 import { SocketMessage } from './Models/SocketMessage';
 import { MessageType } from '../../../Common/constants/Enums/MessageType';
 import { UserValidRequest } from "../../../Common/requests/user-valid-request.model";
+import { GameRoomCreateRequest } from "../../../Common/requests/game-room-create-request.model";
 import { Player } from './Models/Player';
-import { Room } from './Models/Room';
+import { GameRoom } from '../../../Common/models/game-room.model';
+
 
 @Injectable()
 export class ChatService {
@@ -61,11 +63,13 @@ export class ChatService {
     this.messages.next(socketMessage);
   }
 
-  createNewRoom(room: Room) {
-    this.wsService.roomName = room.name;
+  public createNewRoom(room: GameRoom): void {
+    //this.wsService.roomName = room.name;
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.CREATE_ROOM;
-    socketMessage.Content = room;
+    let request = new GameRoomCreateRequest();
+    request.gameRoom = room;
+    socketMessage.Content = request;
     this.messages.next(socketMessage);
   }
 
@@ -105,6 +109,12 @@ export class ChatService {
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.PLAYER_MISSION_CHANGE;
     socketMessage.Content = { userName : userName, onMission : isOnMission};
+    this.messages.next(socketMessage);
+  }
+
+  public getGameDetails() {
+    const socketMessage = new SocketMessage();
+    socketMessage.MessageType = MessageType.GET_GAME_DETAILS;
     this.messages.next(socketMessage);
   }
 

@@ -68,7 +68,11 @@ export class WebSocketService {
         });
 
         this.socket.on(MessageType.GAME_START, (data) => {
-          observer.next(MessageType.GAME_START);
+          observer.next(data);
+        });
+
+        this.socket.on(MessageType.CREATE_ROOM, (data) => {
+          observer.next(data);
         });
 
         this.socket.on(MessageType.SENDING_CHARACTER_CARD, (data) => {
@@ -85,6 +89,10 @@ export class WebSocketService {
         });
 
         this.socket.on(MessageType.GET_SPECIAL_CHARACTERS, (data) => {
+          observer.next(data);
+        });
+
+        this.socket.on(MessageType.GET_GAME_DETAILS, (data) => {
           observer.next(data);
         });
 
@@ -175,6 +183,10 @@ export class WebSocketService {
               }
               case MessageType.GET_SPECIAL_CHARACTERS: {
                 this.socket.emit(MessageType.GET_SPECIAL_CHARACTERS, JSON.stringify(data.Content));
+                break;
+              }
+              case MessageType.GET_GAME_DETAILS: {
+                this.socket.emit(MessageType.GET_GAME_DETAILS, JSON.stringify(data.Content));
                 break;
               }
               case MessageType.GET_DEFAULT_CAMPAIGN: {

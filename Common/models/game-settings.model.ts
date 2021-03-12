@@ -1,8 +1,7 @@
-import { CharacterCard } from '../../../../Common/db/CharacterCard';
-import { Campaign } from './../../../../Common/models/campaign.model';
+import { CharacterCard } from './../db/CharacterCard';
+import { Campaign } from './campaign.model';
 
-export class Room {
-    public name: string;
+export class GameSettings {
     public numberOfGood: number;
     public numberOfEvil: number;
     public excaliburEnabled: boolean;

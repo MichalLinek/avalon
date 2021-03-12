@@ -1,12 +1,15 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
-import { Room } from '../Models/Room';
+import { GameRoom } from '../../../../Common/models/game-room.model';
 import { ISubscription } from 'rxjs/Subscription';
 import { CharacterCard } from '../../../../Common/db/CharacterCard';
 import { MessageType } from '../../../../Common/constants/Enums/MessageType';
 import { Mission } from '../../../../Common/models/mission.model';
 import { NavigationPaths } from '../helpers/navigation-paths';
+import { GameDetailsResponse } from "../../../../Common/responses/game-details-response.model";
+import { GameRoomCreateResponse } from "../../../../Common/responses/game-room-create-response.model";
+import { Campaign } from '../../../../Common/models/campaign.model';
 
 @Component({
   selector: 'app-create-room',
@@ -17,31 +20,37 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
 
   public displayedColumns: string[] = ['id', 'companions', 'failures'];
   public specialCharacters: CharacterCard[] = [];
-  public room: Room = new Room();
-
+  public defaultCampaigns: Campaign[] = [];
+  public room: GameRoom = new GameRoom("", "");
+  public error: boolean = false;
   private subscription: ISubscription;
-  private numberOfPlayers: number;
+  public numberOfPlayers: number;
 
   constructor(private chat: ChatService, private router: Router) { }
 
   public ngOnInit(): void {
-    this.subscription = this.chat.messages.subscribe(msg => {
+    this.subscription = this.chat.messages.subscribe((msg) => {
       if (msg) {
-        if (msg.Type === MessageType.GET_SPECIAL_CHARACTERS) {
-          this.specialCharacters = msg.data;
-        } else if (msg.Type === MessageType.GET_DEFAULT_CAMPAIGN) {
-        this.room.campaign = msg.data;
+        if (msg.type === MessageType.GET_GAME_DETAILS) {
+          let gameDetailResponse = msg as GameDetailsResponse;
+          this.specialCharacters = gameDetailResponse.specialCharacters;
+          this.defaultCampaigns = gameDetailResponse.defaultCampaigns;
+        }
+        else if (msg.type === MessageType.CREATE_ROOM) {
+          let createRoomResponse = msg as GameRoomCreateResponse;
+          if (createRoomResponse.isRoomCreated)
+            this.router.navigate([NavigationPaths.waitingRoom]);
+          else
+            this.error = true;
         }
       }
     });
 
-    this.chat.getSpecialCharacters();
+    this.chat.getGameDetails();
   }
 
   public createRoom(): void {
-    this.room.numberOfPlayers = 1;
     this.chat.createNewRoom(this.room);
-    this.router.navigate([NavigationPaths.waitingRoom]);
   }
 
   public goBack(): void {
@@ -50,16 +59,6 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  public onNgModelChange($event): void {
-    console.log($event);
-    this.setNumberOfPlayers();
-  }
-
-  public setNumberOfPlayers(): void {
-    this.numberOfPlayers = this.room.specialCharacters.length + this.room.numberOfEvil + this.room.numberOfGood;
-    this.chat.getDefaultCampaign(this.numberOfPlayers);
   }
 
   public decreaseCompanions(mission: Mission): void {

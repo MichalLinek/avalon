@@ -1,5 +1,18 @@
 <form #avalonForm="ngForm" (ngSubmit)="createRoom()">
     <p>Room Setup</p>
+
+    <div>
+        <mat-form-field>
+            <input [(ngModel)]="room.name" required matInput placeholder="RoomName" value="Your Room" name="roomName"> 
+        </mat-form-field>
+        <div>
+        <p>Number of Players</p>
+            <mat-slider min="2" max="10" name="playersNumber" [(ngModel)] = "numberOfPlayers">
+            </mat-slider> {{ numberOfPlayers}}
+        </div>
+        <button mat-raised-button (click)="setDefaultCampaign()">Set Default Campaign</button>
+    </div>
+    
     <mat-accordion>
         <mat-expansion-panel style="width:50%;margin:auto">
                 <mat-expansion-panel-header>
@@ -8,18 +21,13 @@
                 <mat-card>
                     <mat-card-content>
                         <div>
-                            <mat-form-field>
-                                <input [(ngModel)]="room.name" required matInput placeholder="RoomName" value="Your Room" name="roomName"> 
-                            </mat-form-field>
-                        </div>
-                        <div>
                             <p>Number of Normal Good</p>
-                            <mat-slider min="0" max="5" name="normalGoodPlayers" #goodNumber [(ngModel)] = "room.numberOfGood" (ngModelChange) ="onNgModelChange($event)">
+                            <mat-slider min="0" max="5" name="normalGoodPlayers" #goodNumber [(ngModel)] = "room.gameSettings.numberOfGood">
                             </mat-slider> {{goodNumber.value}}
                         </div>
                         <div>
                             <p>Number of Normal Evil</p>
-                            <mat-slider min="0" max="3" name="normalEvilPlayers" #evilNumber [(ngModel)] = "room.numberOfEvil" (ngModelChange) ="onNgModelChange($event)">
+                            <mat-slider min="0" max="3" name="normalEvilPlayers" #evilNumber [(ngModel)] = "room.gameSettings.numberOfEvil">
                             </mat-slider> {{evilNumber.value}}
                         </div>
                     </mat-card-content>
@@ -31,7 +39,7 @@
             </mat-expansion-panel-header>
             <mat-card>
                 <mat-card-content>
-                    <mat-selection-list name="specialCharacters" [(ngModel)]="room.specialCharacters" (ngModelChange)="onNgModelChange($event)">
+                    <mat-selection-list name="specialCharacters" [(ngModel)]="room.gameSettings.specialCharacters">
                         <mat-list-option *ngFor="let specialCharacter of specialCharacters" [value]="specialCharacter">
                         {{ specialCharacter.name }} - {{ specialCharacter.description}}
                         </mat-list-option>
@@ -46,9 +54,9 @@
             <mat-card>
                 <mat-card-content>
                 <p>Campaign</p>
-                <p> Total number Of players : {{ this.room.campaign.numberOfPlayers}}</p>
-                <p> Total number of Mordred's minions : {{ this.room.campaign.recommendedMordredMinions}}</p>
-                <mat-table [dataSource]="this.room.campaign.missions" class="mat-elevation-z8" style="width:400px; margin:auto">
+                <p> Total number Of players : {{ this.room.gameSettings.campaign.numberOfPlayers}}</p>
+                <p> Total number of Mordred's minions : {{ this.room.gameSettings.campaign.recommendedMordredMinions}}</p>
+                <mat-table [dataSource]="this.room.gameSettings.campaign.missions" class="mat-elevation-z8" style="width:400px; margin:auto">
                     
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef>Mission Number</mat-header-cell>
@@ -89,10 +97,10 @@
             </mat-expansion-panel-header>
         <mat-card>
             <div>
-                <mat-checkbox name="excaliburEnabled" [(ngModel)]="room.excaliburEnabled">Excalibur Enabled</mat-checkbox>
+                <mat-checkbox name="excaliburEnabled" [(ngModel)]="room.gameSettings.excaliburEnabled">Excalibur Enabled</mat-checkbox>
             </div>
             <div>
-                <mat-checkbox name="ladyOfTheLakeEnabled" [(ngModel)]="room.ladyOfTheLakeEnabled">Lady Of The Lake Enabled</mat-checkbox>
+                <mat-checkbox name="ladyOfTheLakeEnabled" [(ngModel)]="room.gameSettings.ladyOfTheLakeEnabled">Lady Of The Lake Enabled</mat-checkbox>
             </div>
         </mat-card>
         </mat-expansion-panel>

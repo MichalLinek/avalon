@@ -12,6 +12,7 @@ export enum MessageType {
     SENDING_CHARACTER_CARD = 'sendingCharacterCard',
     INIT_GAME = 'initGame',
     PLAYER_MISSION_CHANGE = 'missionChanged',
+    GET_GAME_DETAILS = 'getGameDetails',
     GET_SPECIAL_CHARACTERS = 'getSpecialCharacters',
     GET_DEFAULT_CAMPAIGN = 'getDefaultCampaign',
     START_VOTING = 'startVoting',

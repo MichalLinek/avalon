@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../chat.service';
-import { Room } from '../Models/Room';
 import { ISubscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs';
 import { CharacterCard } from '../../../../Common/db/CharacterCard'
 import { Player } from '../Models/Player';
 import { MatDialog } from '@angular/material';

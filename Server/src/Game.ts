@@ -108,4 +108,7 @@ export class Game {
         return campaign;
     }
 
+    public static getDefaultCampaigns(): Campaign[] {
+        return CampaignDatabase.Campaigns;
+    }
 }
