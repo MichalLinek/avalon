@@ -1,6 +1,4 @@
-<p>
-  Should they go ?
-</p>    
+<p>Do you agree that <span *ngFor="let p of data.players">p.userName</span> should go?</p>    
 
 <mat-radio-group [(ngModel)]="selectedOption">
     <mat-radio-button *ngFor="let option of options" [value]="option">

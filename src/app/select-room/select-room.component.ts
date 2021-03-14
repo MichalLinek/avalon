@@ -5,7 +5,7 @@ import { ISubscription } from 'rxjs/Subscription';
 import { NavigationPaths } from '../helpers/navigation-paths';
 import { UserGlobal } from '../user-global.model';
 import { MessageType } from '../../common/constants/Enums/MessageType';
-import { JoinRoomResponse } from '../../common/responses';
+import { AvailableRoomsResponse, JoinRoomResponse } from '../../common/responses';
 
 @Component({
   selector: 'app-select-room',
@@ -26,8 +26,11 @@ export class SelectRoomComponent implements OnInit, OnDestroy {
         let data = msg as JoinRoomResponse;
         UserGlobal.room = data.gameRoom;
         this.router.navigate([NavigationPaths.waitingRoom]);
-      } 
-      this.availableRooms = msg.map(x => x.substring('ROOM_'.length)),
+      }
+      else if (msg.type === MessageType.AVAILABLE_ROOMS) {
+        let data = msg as AvailableRoomsResponse;
+        this.availableRooms = data.roomIds
+      }
       (error) => console.log(error);
     });
     this.chat.sendRequestForRooms();

@@ -5,15 +5,17 @@ export class GameRoom {
     public roomId: string;
     public name: string;
     public campaign: Campaign;
+    public isStarted: boolean;
 
     constructor(roomId: string, name: string) {
         this.roomId = roomId;
         this.name = name;
         this.campaign = {
+            currentMission: 0,
             numberOfPlayers: 5,
-            numberOfEvil:2,
-            numberOfGood: 3,
-            specialCharactersIds: [2, 9],
+            numberOfEvil: 1,
+            numberOfGood: 1,
+            specialCharactersIds: [],
             missions: [
                 new Mission(1, 2, 1),
                 new Mission(2, 3, 1),
@@ -22,7 +24,8 @@ export class GameRoom {
                 new Mission(5, 3, 1)
             ],
             excaliburEnabled: false,
-            ladyOfTheLakeEnabled: false
+            ladyOfTheLakeEnabled: false,
+            currentVotingFails: 0
         };
     }
 }

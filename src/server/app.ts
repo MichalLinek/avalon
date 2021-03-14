@@ -3,7 +3,7 @@ import { Game } from './game';
 import { Player } from './models/player.model';
 import { GameRoom } from '../common/models/game-room.model';
 import { MessageType } from '../common/constants/Enums/MessageType';
-import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, UserValidRequest, WaitingRomPlayerUpdateRequest } from '../common/requests';
+import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from '../common/requests';
 import { 
     PlayersInRoomResponse,
     UserValidResponse,
@@ -11,8 +11,18 @@ import {
     GameRoomCreateResponse,
     JoinRoomResponse,
     GameStartResponse,
-    InitGameResponse
+    InitGameResponse,
+    AvailableRoomsResponse,
+    StartVotingResponse,
+    PlayerPlannedOnMissionResponse,
+    TeamVoteRequestResponse,
+    VotingSuccessResponse,
+    VotingFailResponse,
+    AllMissionsCompletedResponse,
+    MissionVotesResultResponse
  } from "../common/responses";
+import { request } from 'http';
+import { MissionResultType } from '../common/constants/Enums/MissionResultType';
 
 let path = require('path');
 let express = require('express');
@@ -73,15 +83,25 @@ export class Server {
                 console.log('reconnect fired');
             });
 
-            socket.on('availableRooms', () => {
+            socket.on(MessageType.AVAILABLE_ROOMS, () => {
                 let rooms= [];
                 console.log('sending available rooms');
                 for(var roomName in io.sockets.adapter.rooms) {
-                    if (roomName.indexOf(this.roomPrefix) > -1) {
-                        rooms.push(roomName);
+                    if ((roomName.indexOf(this.roomPrefix) > -1)) {
+                        let room = this.rooms.get(roomName);
+                        if (!room.isStarted) {
+                            let roomWithoutPrefix = roomName.replace(this.roomPrefix, "");
+                            rooms.push(roomWithoutPrefix);
+                        }
                     }
                 }
-                socket.emit('availableRooms', rooms);
+
+                let response: AvailableRoomsResponse = {
+                    type: MessageType.AVAILABLE_ROOMS,
+                    roomIds: rooms
+                }
+
+                socket.emit(MessageType.AVAILABLE_ROOMS, response);
             });
 
             socket.on('message', (message) => {
@@ -245,163 +265,159 @@ export class Server {
                 socket.emit(MessageType.INIT_GAME, data);
             });
 
-            socket.on('missionChanged', (playerMission) => {
-                
-                if (socket["roomName"]) {
-                    let parsedPlayerMission = JSON.parse(playerMission);
-                    let roomName = socket["roomName"];
-                    let data = parsedPlayerMission;
-                    data.type = "missionChanged";
-                    io.sockets.in(roomName).emit('missionChanged', data);
+            socket.on(MessageType.PLAYER_MISSION_CHANGE, (request: string) => {
+                let requestData: PlayerPlannedOnMissionRequestModel = JSON.parse(request);
+                let socketId = requestData.player.socketId;
+                if (!socketId) return;
+
+                let player = this.activeUsers.get(socketId);
+                player.isGoingOnAMission = requestData.player.isGoingOnAMission;
+
+                let response: PlayerPlannedOnMissionResponse = {
+                    type: MessageType.PLAYER_MISSION_CHANGE,
+                    player: player
                 }
+                io.sockets.in(player.roomId).emit(MessageType.PLAYER_MISSION_CHANGE, response);
             });
 
-            
-
-            socket.on('voteForTeam', (data) => {
+            socket.on(MessageType.VOTE_FOR_TEAM, (request: string) => {
                 console.log('voteForTeam Start');
-                const voteData = JSON.parse(data);
-                const voteOwner = voteData.userName;
-                const voteValue = voteData.voteFor;
-                let room = io.sockets.adapter.rooms[socket["roomName"]];
-                
-                let mission = room["GameOptions"].Campaign.Missions[room["GameOptions"].MissionId];
-                
-                if (mission.Votes.indexOf(x => x.user === -1)) {
-                    mission.Votes.push({user:voteOwner, voteValue: voteValue});
-                }
-                else {
-                    mission.Votes[voteOwner] = voteValue;
-                    //UPDATE vote...
-                    //mission.Votes
-                }
-                
+                let data: TeamVoteRequestModel = JSON.parse(request);
+                if (!this.activeUsers.has(socket.id)) return;
 
-                let outputData = { type: 'voteForTeam', voteOwner : voteOwner, voteValue: voteValue};
-                io.sockets.in(socket["roomName"]).emit('voteForTeam', outputData);
+                let player = this.getPlayerFromSocketId(socket.id);
+                player.hasVoted = true;
+                player.voteValue = data.voteValue;
 
-                if (mission.Votes.length === room["GameOptions"].Campaign.NumberOfPlayers) {
+                let roomWithPrefix = this.roomPrefix + data.roomId;
+                let room = this.rooms.get(roomWithPrefix);
+                
+                let response: TeamVoteRequestResponse = {
+                    type: MessageType.VOTE_FOR_TEAM,
+                    player: player
+                }
+                io.sockets.in(roomWithPrefix).emit(MessageType.VOTE_FOR_TEAM, response);
+
+
+                let users: Socket[] = this.getUsersInRoom(roomWithPrefix);
+                let players: Player[] = [];
+                for (let i = 0; i < users.length; i++ ) {
+                    players.push(this.getPlayerFromSocketId(users[i].id))
+                }
+                let numberOfPlayersWhoVoted = players.filter(x => x.hasVoted);
+                console.log('voted');
+                console.log(numberOfPlayersWhoVoted.length);
+                if (numberOfPlayersWhoVoted.length === users.length) {
+                    let mission = room.campaign.missions[room.campaign.currentMission];
                     // Majority of accepts:
-                    if (mission.Votes.filter(x => x.voteValue) > mission.Votes.filter(x => !x.voteValue)) {
-                        console.log('enough votes ! Let\'s go');
-                        let team = room["Team"];
-                        let players = this.getUsersInRoom(socket["roomName"]);
-                        let sockets = players.filter(x => team.indexOf(x["userName"]) > -1);
-                        // room.GameOptions.MissionId ++;
-                        // let mission = room.GameOptions.Campaign.Missions[room.GameOptions.MissionId];
-                        // const campaign = room.GameOptions.Campaign;
-                        // let previousLeader = campaign.Players.find(x => x.IsLeader);
-                        // previousLeader.IsLeader = false;
-                        // let leaderId = campaign.Players.indexOf(previousLeader);
-                        // leaderId++;
-                        // if (!campaign.Players[leaderId]) {
-                        //     campaign.Players[0].IsLeader = true;
-                        // }
-                        // else {
-                        //     campaign.Players[leaderId].IsLeader = true;
-                        // }
-                        //outputData = { type : 'resetMission', players: campaign.Players, mission : mission };
-                        for (let i = 0 ; i < sockets.length; i++) {
-                            //sockets[i].emit('voteMission', { type: 'voteMission' });
+                    console.log('voting success');
+                    let votedFor = numberOfPlayersWhoVoted.filter(x => x.voteValue);
+                    let votedAgainst = numberOfPlayersWhoVoted.filter(x => !x.voteValue);
+                    if (votedFor.length > votedAgainst.length) {
+                        
+                        let response: VotingSuccessResponse = {
+                            type: MessageType.VOTING_SUCCESS
                         }
-                        mission.Votes = [];
-                        mission.SuccessFailureVote = [];
+
+                        io.sockets.in(roomWithPrefix).emit(MessageType.VOTING_SUCCESS, response);
                     }
                     else {
-                        console.log('not enough votes');
-                        const campaign = room["GameOptions"].Campaign;
-                        let previousLeader = campaign.Players.find(x => x.IsLeader);
-                        previousLeader.IsLeader = false;
-                        let leaderId = campaign.Players.indexOf(previousLeader);
-                        leaderId++;
-                        if (!campaign.Players[leaderId]) {
-                            campaign.Players[0].IsLeader = true;
-                        }
-                        else {
-                            campaign.Players[leaderId].IsLeader = true;
-                        }
-                        console.log(leaderId);
-                        mission.VotingFailed ++;
-
-                        if (mission.VotingFailed === 5) {
+                        // Majority didn't agree
+                        console.log('voting Failed');
+                        room.campaign.currentVotingFails += 1;
+                        if (room.campaign.currentVotingFails === 5) {// TODO!!!
                             const outputData = { type: 'endGame', evilWin: true};
                             io.sockets.in(socket["roomName"]).emit('endGame', outputData);
+                            return;
                         }
-                        mission.Votes = [];
-                        mission.SuccessFailureVote = [];
-                        const outputData = { type : 'resetMission', players: campaign.Players, mission : mission };
-                        io.sockets.in(socket["roomName"]).emit('resetMission', outputData);
+                        let leaderId = players.findIndex(x => x.isLeader);
+                        players[leaderId].isLeader = false;
+
+                        leaderId = (leaderId + 1) % players.length;
+                        players[leaderId].isLeader = true;
+                        console.log(players[leaderId].userName + ' is a leader');
+                        for (let i = 0; i < players.length; i ++) {
+                            players[i].hasVoted = false;
+                            players[i].voteValue = null;
+                        }
+
+                        let response: VotingFailResponse = {
+                            type: MessageType.VOTING_FAILED,
+                            players: players
+                        }
+                        io.sockets.in(roomWithPrefix).emit(MessageType.VOTING_FAILED, response);
                     }
                 }
             });
 
-            socket.on('voteMission', (data) => {
+            socket.on(MessageType.VOTE_MISSION, (request: string) => {
                 console.log('voteInMission Start');
-                const voteData = JSON.parse(data);
-                const voteOwner = voteData.userName;
-                const voteValue = voteData.voteFor;
-                let room = io.sockets.adapter.rooms[socket["roomName"]];
-                let mission = room["GameOptions"].Campaign.Missions[room["GameOptions"].MissionId];
+                let data: VoteMissionRequestModel = JSON.parse(request);
+                let player = this.getPlayerFromSocketId(socket.id);
+                //let roomWithPrefix = this.roomPrefix + player.roomId;
+                console.log('player room is ' + player.roomId);
+                console.log(this.rooms.keys());
+                let room = this.rooms.get(player.roomId);
+                let mission = room.campaign.missions[room.campaign.currentMission];
                 
-                if (mission.SuccessFailureVote.indexOf(x => x.user === -1)) {
-                    mission.SuccessFailureVote.push({user: voteOwner, voteValue: voteValue});
-                }
-                else {
-                    mission.SuccessFailureVote[voteOwner] = voteValue;
-                    //UPDATE vote...
-                    //mission.Votes
-                }
-                console.log(mission.SuccessFailureVote.length);
-                console.log(mission.NumberOfCompanions);
-                if (mission.SuccessFailureVote.length === mission.NumberOfCompanions) {
+                mission.currentVotes.push(data.missionSuccessVote ? MissionResultType.Success : MissionResultType.Fail);
+                console.log('compare ' + mission.currentVotes.length + ' ' + mission.numberOfCompanions);
+                if (mission.currentVotes.length === mission.numberOfCompanions) {
                     console.log('end of voting for mission');
-                    const campaign = room["GameOptions"].Campaign;
-                    let previousLeader = campaign.Players.find(x => x.IsLeader);
-                    previousLeader.IsLeader = false;
-                    let leaderId = campaign.Players.indexOf(previousLeader);
-                    leaderId++;
-                    if (!campaign.Players[leaderId]) {
-                        campaign.Players[0].IsLeader = true;
+                    let users: Socket[] = this.getUsersInRoom(player.roomId);
+                    let players: Player[] = [];
+                    for (let i = 0; i < users.length; i++ ) {
+                        players.push(this.getPlayerFromSocketId(users[i].id))
                     }
-                    else {
-                        campaign.Players[leaderId].IsLeader = true;
+
+                    let leaderId = players.findIndex(x => x.isLeader);
+                    players[leaderId].isLeader = false;
+
+                    leaderId = (leaderId + 1) % players.length;
+                    players[leaderId].isLeader = true;
+                    mission.isSuccess = mission.numberOfFailsToFailMission > mission.currentVotes.filter(x => x === MissionResultType.Fail).length;
+                    room.campaign.currentMission += 1
+
+                    for (let i = 0; i < players.length; i++ ) {
+                        players[i].hasVoted = false;
+                        players[i].voteValue = null;
                     }
-                    room["GameOptions"].MissionId++;
-                    
-                    mission.Success = mission.SuccessFailureVote.filter(x => !x.voteValue).length < mission.NumberOfFailsToFailMission;
-                    console.log("success : "+ mission.Success);
-                    let endGame = room["GameOptions"].Campaign.Missions.length === room["GameOptions"].MissionId;
+
+                    let endGame = room.campaign.missions.length === room.campaign.currentMission;
                     console.log('end Game' + endGame);
                     if (endGame) {
                         console.log('Ending Game');
-                        let evilWin = campaign.Missions.filter(x => x.Success).length < campaign.Missions.filter(x => !x.Success.length);
-                        let outputData = { type: 'endGame', evilWin : evilWin}
-                        io.sockets.in(socket["roomName"]).emit('endGame', outputData);
+                        let evilWin = room.campaign.missions.filter(x => x.isSuccess).length < room.campaign.missions.filter(x => !x.isSuccess).length;
+                        let response: AllMissionsCompletedResponse = {
+                            type: MessageType.END_GAME,
+                            goodWon: !evilWin
+                        }
+                        io.sockets.in(player.roomId).emit(MessageType.END_GAME, response);
                     }
                     else {
-                        console.log("NOT ENDING GAME - " + room["GameOptions"].MissionId)
-                        let nextMission = room["GameOptions"].Campaign.Missions[room["GameOptions"].MissionId];
-                        nextMission.Votes = [];
-                        nextMission.SuccessFailureVote = [];
-
-                        if (!mission.Success) {
-                            let outputData = { type: 'missionVotesResult', IsMissionASuccess : false, players: campaign.Players, mission: nextMission};
-                            io.sockets.in(socket["roomName"]).emit('missionVotesResult', outputData);
-
-                        } else {
-                            let outputData = { type: 'missionVotesResult', IsMissionASuccess : true, players: campaign.Players, mission: nextMission};
-                            io.sockets.in(socket["roomName"]).emit('missionVotesResult', outputData);
+                        console.log("NOT ENDING GAME - " + room.campaign.currentMission);
+                        let response: MissionVotesResultResponse = {
+                            type: MessageType.MISSION_VOTES_RESULT,
+                            lastMission: mission,
+                            players: players
                         }
+                        console.log('send mission results to room ' + player.roomId);
+                        io.sockets.in(player.roomId).emit(MessageType.MISSION_VOTES_RESULT, response);
                     }
                 }
             });
 
-            socket.on('startVoting', (data) => {
-                if (socket["roomName"]) {
-                    let team = JSON.parse(data);
-                    let room = io.sockets.adapter.rooms[socket["roomName"]];
-                    room["Team"] = team;
-                    io.sockets.in(socket["roomName"]).emit('startVoting', { type: 'startVoting'});
+            socket.on(MessageType.START_VOTING, (request: string) => {
+                console.log('started voting');
+                let requestData: StartVotingRequestModel = JSON.parse(request);
+                let roomWithPrefix = this.roomPrefix + requestData.roomId;
+                if (this.rooms.has(roomWithPrefix)) {
+                    let request: StartVotingResponse = {
+                        type: MessageType.START_VOTING,
+                        players: requestData.players
+                    }
+                    console.log(request);
+                    io.sockets.in(roomWithPrefix).emit(MessageType.START_VOTING, request);
                 }
             });
         }); 
@@ -416,6 +432,7 @@ export class Server {
         }
 
         let gameRoom = this.rooms.get(roomId);
+        gameRoom.isStarted = true;
         Game.attachCharactersToSockets(gameRoom.campaign, players);
         Game.addSpecialAbilitiesToCharacters(players);
         Game.setRandomPlayerAsLeader(players);

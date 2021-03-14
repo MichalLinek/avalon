@@ -8,4 +8,6 @@ export class Campaign {
     public numberOfEvil: number;
     public excaliburEnabled: boolean;
     public ladyOfTheLakeEnabled: boolean;
+    public currentMission: number = 0;
+    public currentVotingFails: number = 0;
 }

@@ -2,8 +2,8 @@
     Success Or Failure ?
 </p>    
 
-<mat-radio-group [(ngModel)]="selectedOption">
-    <mat-radio-button *ngFor="let option of options" [value]="option">
+<mat-radio-group [(ngModel)]="selectedOptionId">
+    <mat-radio-button *ngFor="let option of options;let i = index" [value]="i">
         {{option}}
     </mat-radio-button>
 </mat-radio-group>

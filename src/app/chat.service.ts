@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Rx';
 import { SocketMessage } from './Models/SocketMessage';
 import { MessageType } from '../common/constants/Enums/MessageType';
 import { GameRoom } from '../common/models/game-room.model';
-import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, UserValidRequest, WaitingRomPlayerUpdateRequest } from '../common/requests';
+import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from '../common/requests';
 import { UserGlobal } from './user-global.model';
 import { Player } from '../server/models/player.model';
 
@@ -114,10 +114,14 @@ export class ChatService {
     this.messages.next(socketMessage);
   }
 
-  public onMissionApplyUpdate(userName: string, isOnMission: boolean): void {
+  public onMissionApplyUpdate(player: Player): void {
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.PLAYER_MISSION_CHANGE;
-    socketMessage.Content = { userName : userName, onMission : isOnMission};
+
+    let request: PlayerPlannedOnMissionRequestModel = {
+      player: player
+    }
+    socketMessage.Content = request;
     this.messages.next(socketMessage);
   }
 
@@ -127,24 +131,36 @@ export class ChatService {
     this.messages.next(socketMessage);
   }
 
-  public startVoting(playerNames: Array<string>): void {
+  public startVoting(players: Player[]): void {
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.START_VOTING;
-    socketMessage.Content = playerNames;
+    let request: StartVotingRequestModel = {
+      players: players,
+      roomId: UserGlobal.room.name
+    }
+    socketMessage.Content = request;
     this.messages.next(socketMessage);
   }
   
   public voteForPlayer(voteFor: boolean): void {
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.VOTE_FOR_TEAM;
-    socketMessage.Content = { userName: UserGlobal.userName, voteFor: voteFor };
+    let request: TeamVoteRequestModel = {
+      roomId: UserGlobal.room.name,
+      voteValue: voteFor
+    }
+    socketMessage.Content = request;
     this.messages.next(socketMessage);
   }
 
   public voteForMission(voteFor: boolean): void {
     const socketMessage = new SocketMessage();
+    console.log('my vote for mission is ' + voteFor);
     socketMessage.MessageType = MessageType.VOTE_MISSION;
-    socketMessage.Content = { userName: UserGlobal.userName, voteFor: voteFor };
+    let request: VoteMissionRequestModel = {
+      missionSuccessVote: voteFor
+    }
+    socketMessage.Content = request;
     this.messages.next(socketMessage);
   }
 }

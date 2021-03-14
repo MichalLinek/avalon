@@ -104,8 +104,9 @@ export class Game {
 
     public static setRandomPlayerAsLeader(players: Player[]): void {
         const len = players.length;
-        players[Math.floor(Math.random() * len)].isLeader = true;
-
+        let randomPlayer = players[Math.floor(Math.random() * len)];
+        randomPlayer.isLeader = true;
+        console.log(randomPlayer.userName + ' is a leader!!');
     }
 
     public static getSpecialCharacters() {

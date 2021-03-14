@@ -25,7 +25,7 @@
 <ng-container matColumnDef="onMission">
   <mat-header-cell *matHeaderCellDef> On Mission </mat-header-cell>
   <mat-cell *matCellDef="let player"> 
-    <mat-checkbox [(ngModel)]="player.isGoingOnAMission" [disabled]="!CheckboxEnabled(player.userName)" (change)="readyClicked($event, player.userName)">
+    <mat-checkbox [(ngModel)]="player.isGoingOnAMission" [disabled]="!checkboxEnabled(player)" (change)="readyClicked($event, player)">
   </mat-checkbox> 
 </mat-cell>
 </ng-container>
@@ -43,8 +43,8 @@
 <ng-container matColumnDef="voteValue">
     <mat-header-cell *matHeaderCellDef> Vote Value </mat-header-cell>
     <mat-cell *matCellDef="let player"> 
-      <mat-checkbox *ngIf="allPlayersVoted" [(ngModel)]="player.voteValue" disabled="disabled">
-    </mat-checkbox> 
+      <span *ngIf="player.hasVoted">{{player.voteValue ? '+' : '-'}}
+      </span> 
   </mat-cell>
   </ng-container>
 
@@ -55,7 +55,7 @@
 <mat-table [dataSource]="missions" class="mat-elevation-z8" style="width:400px; margin:auto">
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
-    <mat-cell *matCellDef="let mission">{{mission.id + 1}}</mat-cell>
+    <mat-cell *matCellDef="let mission">{{mission.id}}</mat-cell>
   </ng-container>
   
   <!-- NumberOfCompanions -->
@@ -74,12 +74,13 @@
   <ng-container matColumnDef="missionSuccess">
       <mat-header-cell *matHeaderCellDef>Mission Success </mat-header-cell>
       <mat-cell *matCellDef="let mission"> 
-        <mat-checkbox [(ngModel)]="mission.isSuccess" disabled="disabled"></mat-checkbox> 
+        <!-- <mat-checkbox [(ngModel)]="mission.isSuccess" disabled="disabled"></mat-checkbox>  -->
+        <span *ngIf="mission.isSuccess != null">{{mission.isSuccess ? '+' : '-'}}</span>
     </mat-cell>
   </ng-container>
   
   <mat-header-row *matHeaderRowDef="missionDisplayedColumns"></mat-header-row>
-  <mat-row [ngClass]="{'highlight': (currentMission + 1) == row.Id}" *matRowDef="let row; columns: missionDisplayedColumns;"></mat-row>
+  <mat-row [ngClass]="{'highlight': (currentMission + 1) == row.id}" *matRowDef="let row; columns: missionDisplayedColumns;"></mat-row>
   </mat-table>
 
 <!-- tabelka jak w waiting-room -->
@@ -89,7 +90,7 @@
   <p>You haven't voted yet !!</p>
   <button  mat-button (click)="openCompanionVoteDialog()">Vote For Team</button>
 </div>
-<button *ngIf="IsVoteButtonActive()" mat-button class="mat-primary" (click)="confirmTeam()">Vote</button>
+<button *ngIf="!afterSelectingCompanions && IsVoteButtonActive" mat-button class="mat-primary" (click)="confirmTeam()">Vote</button>
 <p>Your character : {{characterCard.name}}</p>
 <div>
   <img [src] = "imageUrl | safe">

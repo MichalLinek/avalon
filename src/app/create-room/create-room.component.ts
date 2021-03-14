@@ -25,7 +25,7 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   public room: GameRoom = new GameRoom("", "");
   public error: boolean = false;
   private subscription: ISubscription;
-  public numberOfPlayers: number = 5;
+  public numberOfPlayers: number = 2;
 
   constructor(private chat: ChatService, private router: Router) { }
 

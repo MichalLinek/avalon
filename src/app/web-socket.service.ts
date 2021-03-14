@@ -78,6 +78,10 @@ export class WebSocketService {
           observer.next(data);
         });
 
+        this.socket.on(MessageType.VOTE_MISSION, (data) => {
+          observer.next(data);
+        });
+
         this.socket.on(MessageType.START_VOTING, (data) => {
           observer.next(data);
         });
@@ -86,7 +90,15 @@ export class WebSocketService {
           observer.next(data);
         });
 
-        this.socket.on(MessageType.VOTE_MISSION, (data) => {
+        this.socket.on(MessageType.VOTE_COMPLETED, (data) => {
+          observer.next(data);
+        });
+
+        this.socket.on(MessageType.VOTING_SUCCESS, (data) => {
+          observer.next(data);
+        });
+
+        this.socket.on(MessageType.VOTING_FAILED, (data) => {
           observer.next(data);
         });
 
@@ -143,6 +155,16 @@ export class WebSocketService {
                 break;
               }
 
+              case MessageType.VOTING_SUCCESS: {
+                this.socket.emit(MessageType.VOTING_SUCCESS, JSON.stringify(data.Content));
+                break;
+              }
+
+              case MessageType.VOTING_FAILED: {
+                this.socket.emit(MessageType.VOTING_FAILED, JSON.stringify(data.Content));
+                break;
+              }
+
               case MessageType.LEAVE_ROOM: {
                 this.socket.emit(MessageType.LEAVE_ROOM, JSON.stringify(data.Content));
                 break;
@@ -169,6 +191,10 @@ export class WebSocketService {
                 this.socket.emit(MessageType.PLAYER_MISSION_CHANGE, JSON.stringify(data.Content));
                 break;
               }
+              case MessageType.VOTE_MISSION: {
+                this.socket.emit(MessageType.VOTE_MISSION, JSON.stringify(data.Content));
+                break;
+              }
               case MessageType.GET_GAME_DETAILS: {
                 this.socket.emit(MessageType.GET_GAME_DETAILS, JSON.stringify(data.Content));
                 break;
@@ -183,8 +209,13 @@ export class WebSocketService {
                 break;
               }
 
-              case MessageType.VOTE_MISSION: {
-                this.socket.emit(MessageType.VOTE_MISSION, JSON.stringify(data.Content));
+              case MessageType.VOTE_COMPLETED: {
+                this.socket.emit(MessageType.VOTE_COMPLETED, JSON.stringify(data.Content));
+                break;
+              }
+
+              case MessageType.MISSION_VOTES_RESULT: {
+                this.socket.emit(MessageType.MISSION_VOTES_RESULT, JSON.stringify(data.Content));
                 break;
               }
             }
