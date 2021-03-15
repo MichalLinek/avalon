@@ -7,6 +7,7 @@ import { MessageType } from '../../common/constants/Enums/MessageType';
 import { UserGlobal } from '../user-global.model';
 import { Player } from '../../server/models/player.model';
 import { PlayersInRoomResponse } from '../../common/responses';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-waiting-room',
@@ -22,12 +23,13 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
   public players: Player[] = [];
   public displayedColumns: string[] = ['id', 'name', 'ready'];
 
-  constructor(private chat: ChatService, private router: Router) { }
+  constructor(private chat: ChatService, private router: Router, private notificationService: NotificationService) { }
 
   public ngOnInit(): void {
     this.subscription = this.chat.messages.subscribe(msg => {
       if (msg.type === MessageType.GAME_START) {
         this.startGame();
+        this.notificationService.emitChange('Game Starting');
       } 
       else if (msg.type === MessageType.PLAYERS_IN_ROOM) {
         let request = msg as PlayersInRoomResponse;
@@ -38,7 +40,6 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     }), (error) => console.log('Error' + error);
 
     this.chat.sendRequestForPlayersInRooms(UserGlobal.room.name);
-    console.log(this.chat);
   }
 
   public readyClicked($event): void {

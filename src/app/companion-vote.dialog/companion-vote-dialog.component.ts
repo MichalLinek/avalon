@@ -1,8 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Player } from '../../server/models/player.model';
 
 export interface DialogData {
-  VoteFor? : boolean;
+  players: Player[]
 }
 
 @Component({
@@ -10,18 +11,20 @@ export interface DialogData {
   templateUrl: './companion-vote-dialog.component.html',
   styleUrls: ['./companion-vote-dialog.component.css']
 })
-export class CompanionVoteDialog  {
-  selectedOption : string;
-  options: string[] = ['Agree', 'Reject'];
+export class CompanionVoteDialog {
+  public players : Player[];
 
   constructor(
     public dialogRef: MatDialogRef<CompanionVoteDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
-
-  public onNoClick(): void {
-    if (this.selectedOption) {
-      this.data.VoteFor = this.selectedOption === 'Agree'; 
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+      this.players = data.players;
     }
-    this.dialogRef.close(this.data.VoteFor);
+
+  public onAgree(): void {
+    this.dialogRef.close(true);
+  }
+
+  public onDisagree(): void {
+    this.dialogRef.close(false);
   }
 }

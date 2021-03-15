@@ -1,9 +1,8 @@
-  <p>Enter your name:</p>
+  <p>Login</p>
   <form #helloForm="ngForm" (ngSubmit)="setUserName()">
     <mat-form-field>
         <input required [(ngModel)]="userName" matInput placeholder="Nickname" name="name"> 
     </mat-form-field>
-    <p *ngIf="error" style="color:red">User with given name already exists</p>
     <div>
     <button type="submit" mat-raised-button class="mat-primary" [disabled]="helloForm.form.invalid">Enter Game</button>
   </div>

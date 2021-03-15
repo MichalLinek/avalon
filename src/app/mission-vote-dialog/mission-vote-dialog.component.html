@@ -1,11 +1,18 @@
-<p>
-    Success Or Failure ?
-</p>    
-
-<mat-radio-group [(ngModel)]="selectedOptionId">
-    <mat-radio-button *ngFor="let option of options;let i = index" [value]="i">
-        {{option}}
-    </mat-radio-button>
-</mat-radio-group>
-
-<button mat-button class="mat-primary" (click)="onNoClick()">Vote</button>
+<div class="mdc-dialog">
+    <div class="mdc-dialog__container">
+      <div class="mdc-dialog__surface"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="my-dialog-title"
+        aria-describedby="my-dialog-content">
+        <h2 class="mdc-dialog__title text-center" id="my-dialog-title">Mission</h2>
+        <div class="mdc-dialog__content flex-center" id="my-dialog-content">
+            <div class="flex-horizontal">
+                <button (click)="onSuccess()" mat-raised-button class="mat-primary">Success</button>
+                <button *ngIf="isCharacterEvil" (click)="onFailure()" mat-raised-button class="mat-primary failButton">Fail</button>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+  </div>

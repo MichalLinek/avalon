@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AlignmentType } from '../../common/constants/Enums/AlignmentType';
-import { MissionResultType } from '../../common/constants/Enums/MissionResultType';
 import { CharacterCard } from '../../common/db/CharacterCard';
 
 export interface DialogData {
@@ -15,23 +14,19 @@ export interface DialogData {
   styleUrls: ['./mission-vote-dialog.component.css']
 })
 export class MissionVoteDialog  {
-  selectedOptionId : number;
-  options: string[] = ['Success'];
-
+  public selectedOptionId : number;
+  public isCharacterEvil: boolean;
   constructor(
     public dialogRef: MatDialogRef<MissionVoteDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-      if (this.playerIsEvil()) {
-        this.options.push('Failure');
-      }
+      this.isCharacterEvil = this.data.character.alignment === AlignmentType.Evil;
     }
 
-  public playerIsEvil(): boolean {
-    return this.data.character.alignment === AlignmentType.Evil;
+  public onSuccess(): void {
+    this.dialogRef.close(true);
   }
 
-  public onNoClick(): void {
-    this.data.voteFor = this.selectedOptionId === MissionResultType.Success.valueOf(); 
-    this.dialogRef.close(this.data.voteFor);
+  public onFailure(): void {
+    this.dialogRef.close(false);
   }
 }

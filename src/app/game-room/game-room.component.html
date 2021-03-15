@@ -1,5 +1,3 @@
-<p>Game Room</p>
-
 <mat-table [dataSource]="players" class="mat-elevation-z8" style="width:400px; margin:auto">
 <ng-container matColumnDef="id">
   <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
@@ -88,14 +86,7 @@
 <!-- Mapka gry ? punkty 1,2,3,4,5 które misje się powiodły a które nie, głosowania udane lub nie -->
 <div *ngIf="!playerVoted()">
   <p>You haven't voted yet !!</p>
-  <button  mat-button (click)="openCompanionVoteDialog()">Vote For Team</button>
+  <button mat-raised-button class="mat-primary" (click)="openCompanionVoteDialog()">Vote For Team</button>
 </div>
-<button *ngIf="!afterSelectingCompanions && IsVoteButtonActive" mat-button class="mat-primary" (click)="confirmTeam()">Vote</button>
-<p>Your character : {{characterCard.name}}</p>
-<div>
-  <img [src] = "imageUrl | safe">
-</div>
-<p>Alignment : {{characterCard.alignment}}</p>
-<p>Description : {{characterCard.description}}</p>
-<p>Additional Info : {{characterCard.additionalInfo}}</p>
-<p> {{gameLog}} </p>
+<button mat-raised-button *ngIf="!afterSelectingCompanions && IsVoteButtonActive" mat-button class="mat-primary" (click)="confirmTeam()">Vote</button>
+<button mat-raised-button (click)="openViewCardDialog()" class="mat-primary">View Card</button>

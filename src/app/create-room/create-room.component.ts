@@ -11,6 +11,7 @@ import { GameRoomCreateResponse } from '../../common/responses/game-room-create-
 import { MessageType } from '../../common/constants/Enums/MessageType';
 import { Mission } from '../../common/models/mission.model';
 import { UserGlobal } from '../user-global.model';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-create-room',
@@ -27,7 +28,9 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   private subscription: ISubscription;
   public numberOfPlayers: number = 2;
 
-  constructor(private chat: ChatService, private router: Router) { }
+  constructor(
+    private chat: ChatService,
+    private router: Router, private notificationService: NotificationService) { }
 
   public ngOnInit(): void {
     this.subscription = this.chat.messages.subscribe((msg) => {
@@ -42,9 +45,10 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
           if (createRoomResponse.isRoomCreated) {
             UserGlobal.room = this.room;
             this.router.navigate([NavigationPaths.waitingRoom]);
+            this.notificationService.emitChange('The room has been created');
           }
           else
-            this.error = true;
+            this.notificationService.emitChange('The room with this name already exists');
         }
       }
     });

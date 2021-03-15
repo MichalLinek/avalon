@@ -11,7 +11,7 @@ import { CreateRoomComponent } from './create-room/create-room.component';
 import { WaitingRoomComponent} from './waiting-room/waiting-room.component';
 import { GameRoomComponent } from './game-room/game-room.component';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule, MatRadioModule, MatSliderModule, MatCheckboxModule, MatSelectModule, MatTableModule, MatListModule, MatCardModule, MatExpansionModule } from '@angular/material';
+import { MatButtonModule, MatRadioModule, MatSliderModule, MatCheckboxModule, MatSelectModule, MatTableModule, MatListModule, MatCardModule, MatExpansionModule, MatSnackBarModule } from '@angular/material';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
 import { SafePipe } from './pipes/SafePipe';
@@ -19,6 +19,8 @@ import { MissionVoteDialog } from './mission-vote-dialog/mission-vote-dialog.com
 import { CompanionVoteDialog } from './companion-vote.dialog/companion-vote-dialog.component';
 import { AuthGuard } from './helpers/auth-guard';
 import { NavigationPaths } from './helpers/navigation-paths';
+import { ViewCardDialog } from './view-card-dialog/view-card-dialog.component';
+import { NotificationService } from './services/notification.service';
 
 const routes: Routes = [
   { path: NavigationPaths.home, component: WelcomeComponent },
@@ -38,11 +40,13 @@ const routes: Routes = [
     GameRoomComponent,
     MissionVoteDialog,
     CompanionVoteDialog,
+    ViewCardDialog,
     SafePipe
   ],
   entryComponents: [
     MissionVoteDialog,
-    CompanionVoteDialog
+    CompanionVoteDialog,
+    ViewCardDialog
   ],
   imports: [
     BrowserModule,
@@ -50,12 +54,13 @@ const routes: Routes = [
     FormsModule,
     BrowserAnimationsModule,
     [MatInputModule, MatButtonModule, MatSliderModule, MatSelectModule, MatCheckboxModule, 
-      MatDialogModule, MatTableModule, MatRadioModule, MatListModule, MatCardModule, MatExpansionModule]
+      MatDialogModule, MatTableModule, MatRadioModule, MatListModule, MatCardModule, MatExpansionModule, MatSnackBarModule]
   ],
   providers: [
     ChatService,
     WebSocketService,
-    AuthGuard
+    AuthGuard,
+    NotificationService
   ],
   exports: [RouterModule],
   bootstrap: [AppComponent]

@@ -11,6 +11,8 @@ import { MessageType } from '../../common/constants/Enums/MessageType';
 import { UserGlobal } from '../user-global.model';
 import { Player } from '../../server/models/player.model';
 import { InitGameResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, StartVotingResponse, TeamVoteRequestResponse, VotingFailResponse } from '../../common/responses';
+import { ViewCardDialog } from '../view-card-dialog/view-card-dialog.component';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-game-room',
@@ -26,16 +28,15 @@ export class GameRoomComponent implements OnInit, OnDestroy {
   public players: Player[] = [];
   public votingActive: boolean;
   public afterSelectingCompanions: boolean;
-  public gameLog = ' GAME LOGGER '; 
   public currentMission: number;
-  public imageUrl: string;
   public IsVoteButtonActive: boolean;
 
   private subscription: ISubscription;
 
   constructor(private chat: ChatService, 
               private router: Router,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog,
+              private notificationService: NotificationService) { }
 
   public ngOnInit(): void {
     this.subscription = this.chat.messages.subscribe(msg => {
@@ -44,7 +45,6 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         this.characterCard = data.characterCard;
         this.players = data.players;
         this.currentMission = 0;
-        this.imageUrl = this.getImageUrl();
       } else if (msg.type === MessageType.PLAYER_MISSION_CHANGE) {
         let data = msg as PlayerPlannedOnMissionResponse;
         let player = this.players.find(x => x.socketId === data.player.socketId);
@@ -64,6 +64,7 @@ export class GameRoomComponent implements OnInit, OnDestroy {
           this.openMissionVoteDialog();
         }
         this.IsVoteButtonActive = false;
+        this.notificationService.emitChange('Players agreed on the team');
       } else if (msg.type === 'voteMission') {
         const mePlayer = this.getPlayer();
         if (mePlayer.isGoingOnAMission) {
@@ -71,8 +72,7 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         }
       } else if (msg.type === MessageType.VOTING_FAILED) {
         let data = msg as VotingFailResponse;
-        this.gameLog = 'Team didn\'t have enough votes';
-
+        this.notificationService.emitChange('Players disagree on the team');
         let players = data.players;
         for (let i = 0 ; i < players.length; i++) {
           let pl = this.players.find(x => x.socketId === players[i].socketId);
@@ -87,14 +87,20 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         this.IsVoteButtonActive = false;
       } else if (msg.type === MessageType.END_GAME) {
         if (msg.evilWin) {
-          this.gameLog = 'EVIL WON';
+          this.notificationService.emitChange('Evil won');
         } else {
-          this.gameLog = 'GOOD WON';
+          this.notificationService.emitChange('Good won');
         }
       } else if (msg.type === MessageType.MISSION_VOTES_RESULT) {
         console.log('mission results');
         let data = msg as MissionVotesResultResponse;
         this.missions[this.currentMission].isSuccess = data.lastMission.isSuccess;
+        if (data.lastMission.isSuccess) {
+          this.notificationService.emitChange('Mission successful');
+        }
+        else {
+          this.notificationService.emitChange('Mission failed');
+        }
         this.currentMission += 1;
         let players = data.players;
         for (let i = 0 ; i < players.length; i++) {
@@ -115,14 +121,6 @@ export class GameRoomComponent implements OnInit, OnDestroy {
     }), (error) => console.log('Error' + error);
 
     this.chat.initGame();
-  }
-
-  public getImageUrl(): string {
-    return 'http://localhost:5000' + this.characterCard.imageUrl;
-  }
-
-  public startMission(): void {
-
   }
 
   public readyClicked($event, player: Player): void {
@@ -160,9 +158,8 @@ export class GameRoomComponent implements OnInit, OnDestroy {
 
   public openMissionVoteDialog(): void {
     const dialogRef = this.dialog.open(MissionVoteDialog, {
-      width: '250px',
+      width: '400px',
       data: {
-        voteFor : null,
         character : this.characterCard
       }
     });
@@ -176,10 +173,21 @@ export class GameRoomComponent implements OnInit, OnDestroy {
     });
   }
 
+  public openViewCardDialog(): void {
+    this.dialog.open(ViewCardDialog, {
+      width: '400px',
+      data: {
+        characterCard : this.characterCard
+      }
+    });
+  }
+
   public openCompanionVoteDialog(players: Player[]): void {
     const dialogRef = this.dialog.open(CompanionVoteDialog, {
-      width: '250px',
-      data: { players }
+      width: '400px',
+      data: { 
+        players: players.filter(x => x.isGoingOnAMission)
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

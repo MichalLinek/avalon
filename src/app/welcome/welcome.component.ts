@@ -6,6 +6,7 @@ import { NavigationPaths } from '../helpers/navigation-paths';
 import { MessageType } from '../../common/constants/Enums/MessageType';
 import { UserValidResponse } from '../../common/responses/user-valid-reponse.model';
 import { UserGlobal } from '../user-global.model';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-welcome',
@@ -16,9 +17,11 @@ export class WelcomeComponent implements OnInit, OnDestroy {
 
   public userName: string;
   private subscription: ISubscription;
-  public error: boolean;
   
-  constructor(private chat: ChatService, private router: Router) { }
+  constructor(
+    private chat: ChatService,
+    private router: Router,
+    private notificationService: NotificationService) { }
 
   public ngOnDestroy(): void {
     if (this.subscription)
@@ -33,7 +36,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
           this.router.navigate([NavigationPaths.selectRoom]);
         }
         else {
-          this.error = true;
+          this.notificationService.emitChange('User with given name already exists');
         }
       }
     }), (error) => console.log('Error' + error);
