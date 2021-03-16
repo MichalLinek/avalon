@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CharacterCard } from '../../common/db/CharacterCard';
+import { environment } from '../../environments/environment';
 
 export interface DialogData {
   characterCard: CharacterCard
@@ -18,12 +19,12 @@ export class ViewCardDialog  {
   constructor(
     public dialogRef: MatDialogRef<ViewCardDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData) {
-      this.characterCard = data.characterCard
-      this.imageUrl = this.getImageUrl()
+      this.characterCard = data.characterCard;
+      this.imageUrl = this.getImageUrl();
     }
 
     public getImageUrl(): string {
-      return 'http://localhost:5000' + this.characterCard.imageUrl;
+      return environment.ws_url + this.characterCard.imageUrl;
     }
 
     public onClose(): void {

@@ -15,6 +15,7 @@ import { ISubscription } from 'rxjs/Subscription';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'app';
   private subscription: ISubscription;
+  public userName: UserGlobal;
 
   constructor(
     private chat: ChatService,

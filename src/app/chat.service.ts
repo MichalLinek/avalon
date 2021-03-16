@@ -28,7 +28,7 @@ export class ChatService {
     this.messages.next(socketMessage);
   }
 
-  public setUserName(userName): void {
+  public setUserName(userName: string): void {
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.SET_USERNAME;
     let request =  new UserValidRequest();

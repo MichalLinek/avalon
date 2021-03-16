@@ -1,6 +1,6 @@
 <form #avalonForm="ngForm" (ngSubmit)="createRoom()">
     <p>Room Setup</p>
-    <div>
+    <div class="flex-center">
         <mat-form-field>
             <input [(ngModel)]="room.name" required matInput placeholder="RoomName" value="Your Room" name="roomName"> 
         </mat-form-field>
@@ -9,11 +9,9 @@
             <mat-slider min="2" max="10" name="playersNumber" [(ngModel)] = "room.campaign.numberOfPlayers">
             </mat-slider> {{ room.campaign.numberOfPlayers }}
         </div>
-        <button type="button" mat-raised-button (click)="setDefaultCampaign()">Set Default Campaign</button>
-    </div>
-    
+        <button type="button" mat-raised-button (click)="setDefaultCampaign()" class="mat-primary">Set Default Campaign</button>
     <mat-accordion>
-        <mat-expansion-panel style="width:50%;margin:auto">
+        <mat-expansion-panel>
                 <mat-expansion-panel-header>
                     <mat-panel-title>General</mat-panel-title>
                 </mat-expansion-panel-header>
@@ -32,7 +30,7 @@
                     </mat-card-content>
                 </mat-card>     
             </mat-expansion-panel>
-        <mat-expansion-panel style="width:50%;margin:auto">
+        <mat-expansion-panel>
             <mat-expansion-panel-header>
                 <mat-panel-title>Special Characters</mat-panel-title>
             </mat-expansion-panel-header>
@@ -46,7 +44,7 @@
                 </mat-card-content>
             </mat-card>     
         </mat-expansion-panel>
-        <mat-expansion-panel style="width:50%;margin:auto">
+        <mat-expansion-panel>
             <mat-expansion-panel-header>
                     <mat-panel-title>Campaign</mat-panel-title>
             </mat-expansion-panel-header>
@@ -90,7 +88,7 @@
             </mat-card-content>
         </mat-card>
         </mat-expansion-panel>
-        <mat-expansion-panel style="width:50%;margin:auto">
+        <mat-expansion-panel>
             <mat-expansion-panel-header>
                     <mat-panel-title>Add-ons</mat-panel-title>
             </mat-expansion-panel-header>
@@ -104,6 +102,7 @@
         </mat-card>
         </mat-expansion-panel>
     </mat-accordion>
+
     <p>Total number of players: {{room.campaign.numberOfPlayers}}</p>
     <p>Good Characters: {{room.campaign.numberOfGood}}</p>
     <p>Evil Characters: {{room.campaign.numberOfEvil}}</p>
@@ -112,7 +111,8 @@
     <p *ngIf="room.campaign.excaliburEnabled">Excalibur enabled</p>
     <p *ngIf="room.campaign.ladyOfTheLakeEnabled">Lady Of The Lake enabled</p>
     <div>
-        <button mat-raised-button (click)="goBack()">Back</button>
+        <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button>
         <button [disabled]="avalonForm.form.invalid" type="submit" mat-raised-button class="mat-primary">Create New Room</button>
     </div>
+</div>
 </form>

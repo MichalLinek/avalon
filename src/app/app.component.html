@@ -1,6 +1,9 @@
-<div *ngIf="isUserNameChosen()" style="text-align:center">
-  <p>Your nickname : {{getUserName()}}</p>
+<div class="app-top">
+  <span class="header-font"></span>
+  <!-- {{isUserNameChosen() ? getUserName(): AVALON}}-->
 </div>
-<div style="text-align:center">
-  <router-outlet></router-outlet>
+<div class="app-margins">
+  <div class="app-main">
+    <router-outlet></router-outlet>
+  </div>
 </div>

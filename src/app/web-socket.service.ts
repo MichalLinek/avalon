@@ -6,6 +6,7 @@ import { environment } from '../environments/environment';
 import { SocketMessage } from './Models/SocketMessage';
 import { MessageType } from '../common/constants/Enums/MessageType';
 import { UserGlobal } from './user-global.model';
+import { Subject } from 'rxjs/Rx';
 
 @Injectable()
 export class WebSocketService {
@@ -16,10 +17,8 @@ export class WebSocketService {
     console.log('WebSocket Service constructor');
   }
 
-  connect(): Rx.Subject<MessageEvent> {
+  public connect(): Subject<MessageEvent> {
     console.log('WebSocket Service connect method run');
-    // If you aren't familiar with environment variables then
-    // you can hard code `environment.ws_url` as `http://localhost:5000`
     this.socket = io(environment.ws_url);
     console.log(this.socket);
     // We define our observable which will observe any incoming messages
@@ -121,105 +120,9 @@ export class WebSocketService {
 
     const observer = {
         next: (data: SocketMessage) => {
-          console.log('socket used');
           console.log(this.socket);
           if (data) {
-            switch (data.MessageType) {
-              case MessageType.CREATE_ROOM: {
-                this.socket.emit(MessageType.CREATE_ROOM, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.INCOMING_MESSAGE: {
-                this.socket.emit(MessageType.INCOMING_MESSAGE,
-                  JSON.stringify({ clientId: this.socket.id, content: data, userName: UserGlobal.userName}));
-                this.socket.userName = data;
-                break;
-              }
-
-              case MessageType.AVAILABLE_ROOMS: {
-                this.socket.emit(MessageType.AVAILABLE_ROOMS);
-                break;
-              }
-              case MessageType.JOIN_ROOM: {
-                this.socket.emit(MessageType.JOIN_ROOM, JSON.stringify(data.Content));
-                break;
-              }
-              case MessageType.SET_USERNAME: {
-                this.socket.emit(MessageType.SET_USERNAME, data.Content);
-                break;
-              }
-
-              case MessageType.PLAYERS_IN_ROOM: {
-                this.socket.emit(MessageType.PLAYERS_IN_ROOM, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.VOTING_SUCCESS: {
-                this.socket.emit(MessageType.VOTING_SUCCESS, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.VOTING_FAILED: {
-                this.socket.emit(MessageType.VOTING_FAILED, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.LEAVE_ROOM: {
-                this.socket.emit(MessageType.LEAVE_ROOM, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.WAITING_ROOM_PLAYER_UPDATE: {
-                this.socket.emit(MessageType.WAITING_ROOM_PLAYER_UPDATE, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.PLAYER_UPDATE: {
-                this.socket.emit(MessageType.PLAYER_UPDATE, JSON.stringify(data.Content));
-                break;
-              }
-              case MessageType.GAME_START: {
-                this.socket.emit(MessageType.GAME_START, '');
-                break;
-              }
-              case MessageType.INIT_GAME: {
-                this.socket.emit(MessageType.INIT_GAME, JSON.stringify(data.Content));
-                break;
-              }
-              case MessageType.PLAYER_MISSION_CHANGE: {
-                this.socket.emit(MessageType.PLAYER_MISSION_CHANGE, JSON.stringify(data.Content));
-                break;
-              }
-              case MessageType.VOTE_MISSION: {
-                this.socket.emit(MessageType.VOTE_MISSION, JSON.stringify(data.Content));
-                break;
-              }
-              case MessageType.GET_GAME_DETAILS: {
-                this.socket.emit(MessageType.GET_GAME_DETAILS, JSON.stringify(data.Content));
-                break;
-              }
-              case MessageType.START_VOTING: {
-                this.socket.emit(MessageType.START_VOTING, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.VOTE_FOR_TEAM: {
-                this.socket.emit(MessageType.VOTE_FOR_TEAM, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.VOTE_COMPLETED: {
-                this.socket.emit(MessageType.VOTE_COMPLETED, JSON.stringify(data.Content));
-                break;
-              }
-
-              case MessageType.MISSION_VOTES_RESULT: {
-                this.socket.emit(MessageType.MISSION_VOTES_RESULT, JSON.stringify(data.Content));
-                break;
-              }
-            }
-
+            this.socket.emit(data.MessageType, JSON.stringify(data.Content));
           }
         },
         error: (errorMsg) => {
@@ -231,11 +134,6 @@ export class WebSocketService {
         }
     };
 
-    // this.socket.on('connect', function () {
-    //   alert('connect');
-    // });
-    // we return our Rx.Subject which is a combination
-    // of both an observer and observable.
-    return Rx.Subject.create(observer, observable);
+    return Subject.create(observer, observable);
   }
 }

@@ -145,7 +145,8 @@ export class Server {
                 socket.emit(MessageType.CREATE_ROOM, response);
             });
 
-            socket.on(MessageType.SET_USERNAME, (request: UserValidRequest) => {
+            socket.on(MessageType.SET_USERNAME, (data: string) => {
+                let request: UserValidRequest = JSON.parse(data)
                 console.log(request);
                 let uName = request.userName.toLowerCase();
                 const valid = this.validateUser(uName);
@@ -390,7 +391,7 @@ export class Server {
                         let evilWin = room.campaign.missions.filter(x => x.isSuccess).length < room.campaign.missions.filter(x => !x.isSuccess).length;
                         let response: AllMissionsCompletedResponse = {
                             type: MessageType.END_GAME,
-                            goodWon: !evilWin
+                            goodWon: evilWin
                         }
                         io.sockets.in(player.roomId).emit(MessageType.END_GAME, response);
                     }

@@ -1,3 +1,4 @@
+<div class="flex-center">
 <div *ngIf="availableRooms.length == 0">
     <p style="color:red">
         There are no available rooms... Create one!
@@ -12,8 +13,10 @@
     </div>
 </div>
 <div style="margin-top: 20px;">
-    <button mat-raised-button (click)="createRoom()">Create New Room</button>
+    <button mat-raised-button (click)="createRoom()" class="mat-primary">Create New Room</button>
 </div>
 <div style="margin-top: 20px;">
-    <button mat-raised-button (click)="goBack()">Back</button>
+    <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button>
+</div>
+
 </div>

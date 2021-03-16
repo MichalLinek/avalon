@@ -53,22 +53,25 @@ export class Game {
 
             switch(players[i].characterCard.type) {
                 case CharacterType.CommonEvil: {
-                    let friends = otherSockets.filter(x => [0,2,3,4,5,6].indexOf(x.characterCard.type) > -1).map(x => x.userName);
-                    players[i].characterCard.additionalInfo = "You are common evil. You're friends are " + friends.join();
+                    let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon).map(x => x.userName);
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    players[i].characterCard.additionalInfo = "You are common evil. " + additionalMessage;
                     break;
                 }
                 case CharacterType.CommonGood: {
-                    players[i].characterCard.additionalInfo = "Unfortunatelly , you know nothing Jon Snow :(";
+                    players[i].characterCard.additionalInfo = "Your role doesn't give you any advantages";
                     break;
                 }
                 case CharacterType.Mordred: {
-                    let friends = otherSockets.filter(x => x.characterCard.type === 0).map(x => x.userName);
-                    players[i].characterCard.additionalInfo = "You are unknown to Merlin. You're friends are " + friends.join();
+                    let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon).map(x => x.userName);
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    players[i].characterCard.additionalInfo = "You are unknown to Merlin. " + additionalMessage;
                     break;
                 }
                 case CharacterType.Assassin: {
-                    let friends = otherSockets.filter(x => x.characterCard.type === 0).map(x => x.userName);
-                    players[i].characterCard.additionalInfo = "You have to kill Merlin at the end of the game. You're friends are " + friends.join();
+                    let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon).map(x => x.userName);
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    players[i].characterCard.additionalInfo = "You have to kill Merlin at the end of the game. " + additionalMessage;
                     break;
                 }
                 case CharacterType.LancelotEvil: {
@@ -76,26 +79,50 @@ export class Game {
                     break;
                 }
                 case CharacterType.Morgana: {
-                    let friends = otherSockets.filter(x => x.characterCard.type === 0).map(x => x.userName);
-                    players[i].characterCard.additionalInfo = "You are reveiled to Percival with Merlin. You're friends are " + friends.join();
+                    let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon)
+                    .map(x => x.userName);
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    players[i].characterCard.additionalInfo = "You are reveiled to Percival with Merlin. " + additionalMessage;
                     break;
                 }
                 case CharacterType.Oberon: {
-                    players[i].characterCard.additionalInfo = "You are evil but you don't know your friends";
+                    players[i].characterCard.additionalInfo = "You are evil but you don't know your accomplices.";
                     break;
                 }
                 case CharacterType.Merlin: {
-                    let enemies = otherSockets.filter(x => [0,3,4,5,6].indexOf(x.characterCard.type) > -1).map(x => x.userName);
+                    let enemies = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil &&
+                        x.characterCard.type !== CharacterType.Mordred && 
+                        x.characterCard.type !== CharacterType.Oberon)
+                    .map(x => x.userName);
                     players[i].characterCard.additionalInfo = "Your enemies are " + enemies.join();
                     break;
                 }
                 case CharacterType.LancelotGood: {
-                    players[i].characterCard.additionalInfo = "You don't know your friends. Watch out for Lancelot changing cards";
+                    players[i].characterCard.additionalInfo = "You don't know your accomplices. Watch out for Lancelot changing cards";
                     break;
                 }
                 case CharacterType.Percival: {
-                    let merlinAndMorgana = otherSockets.filter(x => [5,7].indexOf(x.characterCard.type) > -1).map(x => x.userName);
-                    players[i].characterCard.additionalInfo = "One of those is Merlin and Morgana: " + merlinAndMorgana.join();
+                    let isMerlinPresent = otherSockets.find(x => [CharacterType.Merlin].indexOf(x.characterCard.type) > - 1);
+                    let isMorganaPresent = otherSockets.find(x => [CharacterType.Morgana].indexOf(x.characterCard.type) > - 1);
+
+                    let additionalMessage = "";
+                    if (!isMerlinPresent && !isMorganaPresent)
+                        additionalMessage = "Your role doesn't give you any advantage";
+                    else if (isMerlinPresent && isMerlinPresent) {
+                        let merlinAndMorgana = [isMerlinPresent, isMorganaPresent];
+                        let chooseOne = merlinAndMorgana[Math.floor(Math.random() * 2)];
+                        let chooseTwo = merlinAndMorgana.filter(x => x !== chooseOne)[0];
+                        additionalMessage = "One of those is Merlin and Morgana: " + chooseOne.userName + ", " + chooseTwo.userName;
+                    }
+                    else {
+                        if (isMerlinPresent)
+                            additionalMessage = "Merlin is : " + isMerlinPresent.userName;
+                        else
+                            additionalMessage = "Morgana is : " + isMorganaPresent.userName;
+                    }
+
+                    players[i].characterCard.additionalInfo = additionalMessage;
+                    
                     break;
                 }
             }

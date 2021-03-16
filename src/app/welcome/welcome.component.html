@@ -1,9 +1,10 @@
-  <p>Login</p>
-  <form #helloForm="ngForm" (ngSubmit)="setUserName()">
+ <form #helloForm="ngForm" (ngSubmit)="setUserName()">
+   <div class="flex-center">
     <mat-form-field>
         <input required [(ngModel)]="userName" matInput placeholder="Nickname" name="name"> 
     </mat-form-field>
     <div>
     <button type="submit" mat-raised-button class="mat-primary" [disabled]="helloForm.form.invalid">Enter Game</button>
   </div>
+</div>
 </form>
