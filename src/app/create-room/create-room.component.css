@@ -3,3 +3,27 @@ mat-cell button.mat-button {
     min-width: inherit;
 }
 
+.flex-horizontal { 
+    display: flex;
+}
+
+.slider-label {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.padding-top {
+    padding-top: 20px;
+}
+
+.div-space-between div {
+    margin-bottom: 20px;
+}
+
+mat-header-cell {
+    text-align: center;
+}

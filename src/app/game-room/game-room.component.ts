@@ -13,6 +13,8 @@ import { Player } from '../../server/models/player.model';
 import { InitGameResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, StartVotingResponse, TeamVoteRequestResponse, VotingFailResponse } from '../../common/responses';
 import { ViewCardDialog } from '../view-card-dialog/view-card-dialog.component';
 import { NotificationService } from '../services/notification.service';
+import { NavigationPaths } from '../helpers/navigation-paths';
+import { AlignmentType } from '../../common/constants/Enums/AlignmentType';
 
 @Component({
   selector: 'app-game-room',
@@ -86,11 +88,8 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         this.afterSelectingCompanions = false;
         this.IsVoteButtonActive = false;
       } else if (msg.type === MessageType.END_GAME) {
-        if (msg.evilWin) {
-          this.notificationService.emitChange('Evil won');
-        } else {
-          this.notificationService.emitChange('Good won');
-        }
+          UserGlobal.win = this.characterCard.alignment === AlignmentType.Good && !msg.evilWin;
+          this.router.navigate([NavigationPaths.endGame]);
       } else if (msg.type === MessageType.MISSION_VOTES_RESULT) {
         console.log('mission results');
         let data = msg as MissionVotesResultResponse;

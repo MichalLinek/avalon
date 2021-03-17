@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { UserGlobal } from './user-global.model';
 import { NotificationService } from './services/notification.service';
 import { MatSnackBar } from '@angular/material';
-import { Subscription } from 'rxjs';
 import { ISubscription } from 'rxjs/Subscription';
 
 @Component({
@@ -15,7 +14,6 @@ import { ISubscription } from 'rxjs/Subscription';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'app';
   private subscription: ISubscription;
-  public userName: UserGlobal;
 
   constructor(
     private chat: ChatService,
@@ -38,12 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public getUserName(): string {
-    return UserGlobal.userName;
-  }
-
-  public isUserNameChosen(): boolean {
-    let userName = UserGlobal.userName;
-    return !!userName;
+    return UserGlobal ? UserGlobal.userName : "";
   }
   
   public displayNotiifcation(notificationString: string) {

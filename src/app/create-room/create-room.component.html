@@ -1,59 +1,47 @@
-<form #avalonForm="ngForm" (ngSubmit)="createRoom()">
-    <p>Room Setup</p>
-    <div class="flex-center">
-        <mat-form-field>
-            <input [(ngModel)]="room.name" required matInput placeholder="RoomName" value="Your Room" name="roomName"> 
-        </mat-form-field>
-        <div>
-        <p>Number of Players</p>
-            <mat-slider min="2" max="10" name="playersNumber" [(ngModel)] = "room.campaign.numberOfPlayers">
-            </mat-slider> {{ room.campaign.numberOfPlayers }}
+<form #avalonForm="ngForm">
+    <div class="flex-center div-space-between">
+        <div class="flex-horizontal full-width">
+            <mat-form-field class="full-width">
+                <input [(ngModel)]="room.name" required matInput placeholder="Enter room name" value="Your Room" name="roomName"> 
+            </mat-form-field>
         </div>
-        <button type="button" mat-raised-button (click)="setDefaultCampaign()" class="mat-primary">Set Default Campaign</button>
-    <mat-accordion>
-        <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>General</mat-panel-title>
-                </mat-expansion-panel-header>
-                <mat-card>
-                    <mat-card-content>
-                        <div>
-                            <p>Number of Normal Good</p>
+        <div class="flex-center full-width green-background">
+            <div class="slider-label">{{ room.campaign.numberOfPlayers }} Players</div>
+            <mat-slider class="full-width" min="2" max="10" name="playersNumber" [(ngModel)] = "room.campaign.numberOfPlayers">
+            </mat-slider>
+        </div>
+    <div style="width: 400px">
+        <mat-accordion style="width: 400px">
+            <mat-expansion-panel class="green-background">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>General</mat-panel-title>
+                    </mat-expansion-panel-header>
+                        <div class="flex-center full-width green-background slider-label padding-top">
+                            <p>Good players: {{room.campaign.numberOfGood}}</p>
                             <mat-slider min="1" max="6" name="normalGoodPlayers" #goodNumber [(ngModel)] = "room.campaign.numberOfGood">
-                            </mat-slider> {{room.campaign.numberOfGood}}
+                            </mat-slider> 
                         </div>
-                        <div>
-                            <p>Number of Normal Evil</p>
+                        <div class="flex-center full-width green-background slider-label padding-top">
+                            <p>Evil Players {{room.campaign.numberOfEvil}}</p>
                             <mat-slider min="1" max="4" name="normalEvilPlayers" #evilNumber [(ngModel)] = "room.campaign.numberOfEvil">
-                            </mat-slider> {{room.campaign.numberOfEvil}}
+                            </mat-slider> 
                         </div>
-                    </mat-card-content>
-                </mat-card>     
-            </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>Special Characters</mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-card>
-                <mat-card-content>
+                </mat-expansion-panel>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Special Characters</mat-panel-title>
+                </mat-expansion-panel-header>
                     <mat-selection-list name="specialCharacters" [(ngModel)]="room.campaign.specialCharactersIds">
                         <mat-list-option *ngFor="let specialCharacter of specialCharacters" [value]="specialCharacter.id" [selected]="room.campaign.specialCharactersIds.indexOf(specialCharacter.id) >= 0">
                         {{ specialCharacter.name }} - {{ specialCharacter.description}}
                         </mat-list-option>
-                        </mat-selection-list>
-                </mat-card-content>
-            </mat-card>     
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                    <mat-panel-title>Campaign</mat-panel-title>
-            </mat-expansion-panel-header>
-            <mat-card>
-                <mat-card-content>
-                <p>Campaign</p>
-                <p> Total number Of players : {{ this.room.campaign.numberOfPlayers}}</p>
-                <p> Total number of Mordred's minions : {{ this.room.campaign.recommendedMordredMinions}}</p>
-                <mat-table [dataSource]="this.room.campaign.missions" class="mat-elevation-z8" style="width:400px; margin:auto">
+                    </mat-selection-list>
+            </mat-expansion-panel>
+            <mat-expansion-panel class="mission-table">
+                <mat-expansion-panel-header>
+                        <mat-panel-title>Mission Details</mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-table [dataSource]="this.room.campaign.missions" class="mat-elevation-z8">
                     
                 <ng-container matColumnDef="id">
                     <mat-header-cell *matHeaderCellDef>Mission Number</mat-header-cell>
@@ -68,51 +56,38 @@
                                 {{mission.numberOfCompanions}}
                             <button mat-button style="width:40px;height:40px" (click)="increaseCompanions(mission)">+</button>
                         </div>
-                    </mat-cell>
-                </ng-container>
-                
-                <ng-container matColumnDef="failures">
-                    <mat-header-cell *matHeaderCellDef>Fails</mat-header-cell>
-                    <mat-cell *matCellDef="let mission">
-                        <div>
-                            <button type="button" mat-button (click)="decreaseFailures(mission)">-</button>
-                                {{mission.numberOfFailsToFailMission}}
-                            <button type="button" mat-button (click)="increaseFailures(mission)">+</button>
-                        </div>
-                    </mat-cell>
-                </ng-container>
-                
-                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-                </mat-table>
-            </mat-card-content>
-        </mat-card>
-        </mat-expansion-panel>
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
+                        </mat-cell>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="failures">
+                        <mat-header-cell *matHeaderCellDef>Fails</mat-header-cell>
+                        <mat-cell *matCellDef="let mission">
+                            <div>
+                                <button type="button" mat-button (click)="decreaseFailures(mission)">-</button>
+                                    {{mission.numberOfFailsToFailMission}}
+                                <button type="button" mat-button (click)="increaseFailures(mission)">+</button>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    </mat-table>
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
                     <mat-panel-title>Add-ons</mat-panel-title>
-            </mat-expansion-panel-header>
-        <mat-card>
-            <div>
-                <mat-checkbox name="excaliburEnabled" [(ngModel)]="room.campaign.excaliburEnabled">Excalibur Enabled</mat-checkbox>
-            </div>
-            <div>
-                <mat-checkbox name="ladyOfTheLakeEnabled" [(ngModel)]="room.campaign.ladyOfTheLakeEnabled">Lady Of The Lake Enabled</mat-checkbox>
-            </div>
-        </mat-card>
-        </mat-expansion-panel>
-    </mat-accordion>
-
-    <p>Total number of players: {{room.campaign.numberOfPlayers}}</p>
-    <p>Good Characters: {{room.campaign.numberOfGood}}</p>
-    <p>Evil Characters: {{room.campaign.numberOfEvil}}</p>
-    <p>Missions: <span *ngFor="let mission of room.campaign.missions">{{mission.numberOfFailsToFailMission}}/{{mission.numberOfCompanions}} </span></p>
-    <p *ngIf="room.campaign.specialCharactersIds?.length">Special Characters: <span *ngFor="let charId of room.campaign.specialCharactersIds">{{getCharacterCardName(charId)}} </span></p>
-    <p *ngIf="room.campaign.excaliburEnabled">Excalibur enabled</p>
-    <p *ngIf="room.campaign.ladyOfTheLakeEnabled">Lady Of The Lake enabled</p>
-    <div>
+                </mat-expansion-panel-header>
+                <mat-selection-list name="specialAddons">
+                    <mat-list-option name="excaliburEnabled" (click)="toggleExcalibur()" [selected]="room.campaign.excaliburEnabled">Excalibur</mat-list-option>
+                    <mat-list-option name="ladyOfTheLakeEnabled" (click)="toggleLadyOfTheLake()" [selected]="room.campaign.ladyOfTheLakeEnabled">Lady Of The Lake</mat-list-option>
+                </mat-selection-list>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    <div class="flex-center">
+        <button [disabled]="avalonForm.form.invalid" type="button" (click)="openRoomSummary()" mat-raised-button class="mat-primary lower-distance-from-button">Create New Room</button>
         <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button>
-        <button [disabled]="avalonForm.form.invalid" type="submit" mat-raised-button class="mat-primary">Create New Room</button>
     </div>
 </div>
 </form>

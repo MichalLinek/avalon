@@ -3,5 +3,19 @@ mat-cell {
 }
 
 .highlight {
-    background-color: #ff4081;
+    background-color: #5b9aa0;
+}
+
+.table-style {
+    width: 400px;
+    margin: auto;
+}
+
+.table-margin-padding {
+    margin-bottom: 20px;
+}
+
+button.mat-primary {
+    width: 100%;
+    margin-top: 20px;
 }

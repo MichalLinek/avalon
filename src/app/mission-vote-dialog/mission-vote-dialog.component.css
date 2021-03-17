@@ -1,7 +1,8 @@
-.failButton {
-    margin-left: 10px;
-}
-
 .flex-horizontal {
     flex-direction: row;
+}
+
+button.mat-primary {
+    width: 100%;
+    margin-top: 20px;
 }

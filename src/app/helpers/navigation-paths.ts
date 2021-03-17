@@ -3,5 +3,6 @@ export const NavigationPaths = {
     selectRoom: "selectRoom",
     waitingRoom: "waitingRoom",
     gameRoom: "gameRoom",
-    createRoom: "createRoom"
+    createRoom: "createRoom",
+    endGame: "endGame"
 }

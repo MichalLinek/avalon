@@ -1,4 +1,3 @@
-<p>Waiting Room ({{availablePlayers}}/{{maxLimit}})</p>
 <div class="flex-center">
   <mat-table [dataSource]="players" class="mat-elevation-z8" style="width: 100%">
       
@@ -19,7 +18,7 @@
 
     <!-- Ready -->
     <ng-container matColumnDef="ready">
-        <mat-header-cell *matHeaderCellDef> Is Ready? </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef> Ready </mat-header-cell>
         <mat-cell *matCellDef="let player"> 
           <mat-checkbox [(ngModel)]="player.ready" disabled="disabled">
         </mat-checkbox> 
@@ -30,16 +29,15 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
+  <div style="margin-top: 20px;">
+    <button class="lower-distance-from-button mat-primary" mat-raised-button (click)="readyClicked()">{{!ready ? 'Ready' : 'Not Ready'}}</button>
+  </div>
+
   <div>
-    <p>Ready ?</p> 
-    <mat-checkbox [(ngModel)]="ready" (change)="readyClicked($event)"></mat-checkbox>
+    <button class="lower-distance-from-button mat-primary" mat-raised-button (click)="requestStartGame()" [disabled]="!isStartActive()">Start Game</button>
   </div>
 
-  <div style="margin-top: 20px;">
-    <button mat-raised-button (click)="requestStartGame()" [disabled]="!isStartActive()">Start Game</button>
-  </div>
-
-  <div style="margin-top: 20px;">
+  <div>
     <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button> 
   </div>
 </div>

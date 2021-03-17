@@ -7,10 +7,8 @@
         aria-describedby="my-dialog-content">
         <h2 class="mdc-dialog__title text-center" id="my-dialog-title">Mission</h2>
         <div class="mdc-dialog__content flex-center" id="my-dialog-content">
-            <div class="flex-horizontal">
-                <button (click)="onSuccess()" mat-raised-button class="mat-primary">Success</button>
-                <button *ngIf="isCharacterEvil" (click)="onFailure()" mat-raised-button class="mat-primary failButton">Fail</button>
-            </div>
+        <button (click)="onSuccess()" mat-raised-button class="mat-primary">Success</button>
+        <button *ngIf="isCharacterEvil" (click)="onFailure()" mat-raised-button class="mat-primary failButton">Fail</button>
         </div>
       </div>
     </div>

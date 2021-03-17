@@ -42,8 +42,8 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
     this.chat.sendRequestForPlayersInRooms(UserGlobal.room.name);
   }
 
-  public readyClicked($event): void {
-    this.ready = $event.checked;
+  public readyClicked(): void {
+    this.ready = !this.ready;
     this.chat.sendWaitingRoomPlayerUpdate(this.ready);
   }
 

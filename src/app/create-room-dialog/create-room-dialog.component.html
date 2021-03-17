@@ -1,0 +1,25 @@
+<div class="mdc-dialog">
+    <div class="mdc-dialog__container">
+      <div class="mdc-dialog__surface"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="my-dialog-title"
+        aria-describedby="my-dialog-content">
+        <h2 class="mdc-dialog__title text-center" id="my-dialog-title">Create Room Summary</h2>
+        <div class="mdc-dialog__content" id="my-dialog-content">
+          <div class="flex-center">
+            <p>Number of players: {{campaign.numberOfPlayers}}</p>
+            <p>Good Characters: {{campaign.numberOfGood}}</p>
+            <p>Evil Characters: {{campaign.numberOfEvil}}</p>
+            <p>Missions: <span *ngFor="let mission of campaign.missions">{{mission.numberOfFailsToFailMission}}/{{mission.numberOfCompanions}} </span></p>
+            <p *ngIf="campaign.specialCharactersIds?.length">Special Characters: <span *ngFor="let charId of campaign.specialCharactersIds">{{getCharacterCardName(charId)}} </span></p>
+            <p *ngIf="campaign.excaliburEnabled">Excalibur enabled</p>
+            <p *ngIf="campaign.ladyOfTheLakeEnabled">Lady Of The Lake enabled</p>
+            <button (click)="onCreate()" mat-raised-button class="mat-primary">Create</button>
+            <button (click)="onCancel()" mat-raised-button class="mat-primary">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+  </div>

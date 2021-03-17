@@ -1,5 +1,15 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
+body {
+  background-color: #F7F7F7;
+  /* background-image: url('./app/castle1.jpg'); */
+  /* opacity: 0.8; */
+}
+
+* {
+  font-size: 16px;
+}
+
 body { 
   font-family: Roboto, Arial, sans-serif;
   margin: 0;
@@ -7,6 +17,10 @@ body {
 
 .basic-container {
   padding: 30px;
+}
+
+.mat-expansion-panel-header-title {
+  color: white;
 }
 
 .version-info {
@@ -22,9 +36,44 @@ body {
   background-color: #622569;
 }
 
+mat-slider {
+  width: 100%;
+}
+
+button.mat-raised-button {
+    width: 400px;
+    height: 60px;
+}
+
 button.mat-primary.mat-raised-button {
+  background-color: #622569;
+  color: white;
+}
+
+.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]).cdk-keyboard-focused,
+.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]).cdk-program-focused,
+.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover {
+  background-color: #622569;
+}
+
+.mat-expansion-indicator::after {
+  color: white;
+}
+mat-expansion-panel-header.mat-expansion-panel-header {
     background-color: #622569;
     color: white;
+}
+
+.mission-table .mat-expansion-panel-body {
+  padding: 0px;
+}
+
+.mat-expansion-panel-header.mat-expanded:focus, .mat-expansion-panel-header.mat-expanded:hover {
+  background-color: #622569 !important
+}
+
+.mat-pseudo-checkbox-checked {
+  background-color: #5b9aa0;
 }
 
 .flex-center {
@@ -35,6 +84,14 @@ button.mat-primary.mat-raised-button {
 
 .text-center {
   text-align: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+button.lower-distance-from-button {
+  margin-bottom: 20px;
 }
 
 .purple-background {
@@ -52,4 +109,7 @@ button.mat-primary.mat-raised-button {
 .red-background {
   background-color: #c83349;
 }
-/* #5b9aa0 */
+
+.green-background {
+  background-color: #5b9aa0;
+}

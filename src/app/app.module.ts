@@ -21,13 +21,16 @@ import { AuthGuard } from './helpers/auth-guard';
 import { NavigationPaths } from './helpers/navigation-paths';
 import { ViewCardDialog } from './view-card-dialog/view-card-dialog.component';
 import { NotificationService } from './services/notification.service';
+import { CreateRoomDialog } from './create-room-dialog/create-room-dialog.component';
+import { EndGameComponent } from './end-game/end-game.component';
 
 const routes: Routes = [
   { path: NavigationPaths.home, component: WelcomeComponent },
   { path: NavigationPaths.selectRoom, component: SelectRoomComponent, canActivate: [AuthGuard]},
   { path: NavigationPaths.createRoom, component: CreateRoomComponent, canActivate: [AuthGuard] },
   { path: NavigationPaths.waitingRoom, component: WaitingRoomComponent, canActivate: [AuthGuard]},
-  { path: NavigationPaths.gameRoom, component : GameRoomComponent,  canActivate: [AuthGuard]}
+  { path: NavigationPaths.gameRoom, component : GameRoomComponent,  canActivate: [AuthGuard]},
+  { path: NavigationPaths.endGame, component : EndGameComponent,  canActivate: [AuthGuard]}
 ];
 
 @NgModule({
@@ -38,15 +41,18 @@ const routes: Routes = [
     CreateRoomComponent,
     WaitingRoomComponent,
     GameRoomComponent,
+    EndGameComponent,
     MissionVoteDialog,
     CompanionVoteDialog,
     ViewCardDialog,
+    CreateRoomDialog,
     SafePipe
   ],
   entryComponents: [
     MissionVoteDialog,
     CompanionVoteDialog,
-    ViewCardDialog
+    ViewCardDialog,
+    CreateRoomDialog
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-<mat-table [dataSource]="players" class="mat-elevation-z8" style="width:400px; margin:auto">
+<mat-table [dataSource]="players" class="mat-elevation-z8 table-style table-margin-padding">
 <ng-container matColumnDef="id">
   <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
   <mat-cell *matCellDef="let element; let i = index;">{{i + 1}}</mat-cell>
@@ -50,7 +50,7 @@
 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
 
-<mat-table [dataSource]="missions" class="mat-elevation-z8" style="width:400px; margin:auto">
+<mat-table [dataSource]="missions" class="mat-elevation-z8 table-style">
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
     <mat-cell *matCellDef="let mission">{{mission.id}}</mat-cell>
@@ -72,7 +72,6 @@
   <ng-container matColumnDef="missionSuccess">
       <mat-header-cell *matHeaderCellDef>Mission Success </mat-header-cell>
       <mat-cell *matCellDef="let mission"> 
-        <!-- <mat-checkbox [(ngModel)]="mission.isSuccess" disabled="disabled"></mat-checkbox>  -->
         <span *ngIf="mission.isSuccess != null">{{mission.isSuccess ? '+' : '-'}}</span>
     </mat-cell>
   </ng-container>
@@ -81,9 +80,6 @@
   <mat-row [ngClass]="{'highlight': (currentMission + 1) == row.id}" *matRowDef="let row; columns: missionDisplayedColumns;"></mat-row>
   </mat-table>
 
-<!-- tabelka jak w waiting-room -->
-<!-- Korona - lider , aktywne checkboxy kto idzie na misje, button do zatwierdzenia, pozostali gracze głosują Sukces/Porażka (zaznaczony checkbox jak już po głosowaniu) -->
-<!-- Mapka gry ? punkty 1,2,3,4,5 które misje się powiodły a które nie, głosowania udane lub nie -->
 <div *ngIf="!playerVoted()">
   <p>You haven't voted yet !!</p>
   <button mat-raised-button class="mat-primary" (click)="openCompanionVoteDialog()">Vote For Team</button>

@@ -12,6 +12,8 @@ import { MessageType } from '../../common/constants/Enums/MessageType';
 import { Mission } from '../../common/models/mission.model';
 import { UserGlobal } from '../user-global.model';
 import { NotificationService } from '../services/notification.service';
+import { MatDialog } from '@angular/material';
+import { CreateRoomDialog } from '../create-room-dialog/create-room-dialog.component';
 
 @Component({
   selector: 'app-create-room',
@@ -30,7 +32,7 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
 
   constructor(
     private chat: ChatService,
-    private router: Router, private notificationService: NotificationService) { }
+    private router: Router, private notificationService: NotificationService, public dialog: MatDialog) { }
 
   public ngOnInit(): void {
     this.subscription = this.chat.messages.subscribe((msg) => {
@@ -92,6 +94,14 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
     }
   }
 
+  public toggleExcalibur(): void {
+    this.room.campaign.excaliburEnabled = !this.room.campaign.excaliburEnabled;
+  }
+
+  public toggleLadyOfTheLake(): void {
+    this.room.campaign.ladyOfTheLakeEnabled = !this.room.campaign.ladyOfTheLakeEnabled
+  }
+
   public setDefaultCampaign(): void {
     console.log(this.room.campaign.specialCharactersIds);
     let campaign = this.defaultCampaigns.find(x => x.numberOfPlayers == this.numberOfPlayers);
@@ -106,5 +116,21 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
     if (value)
       return value.name;
     return "";
+  }
+
+  public openRoomSummary(): void {
+    const dialogRef = this.dialog.open(CreateRoomDialog, {
+      width: '400px',
+      data: {
+        campaign: this.room.campaign,
+        specialCharacters: this.specialCharacters
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.createRoom();
+      }
+    });
   }
 }

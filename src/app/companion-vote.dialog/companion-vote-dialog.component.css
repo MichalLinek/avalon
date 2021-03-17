@@ -6,6 +6,7 @@
     flex-direction: row;
 }
 
-.disagreeButton {
-    margin-left: 10px;
+button.mat-primary {
+    width: 100%;
+    margin-top: 20px;
 }
