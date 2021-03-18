@@ -1,28 +1,33 @@
-# AvalonClient
+# BoardGameAvalon
+The project is a mobile implementation of the famous BoardGame called "Avalon". 
+The application is divided into two parts server and client.
+The connection between the two is based on the sockets.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.4.
+## Client Application
+Run "npm run run-client" in order to build a client in an angular app. By default application runs on http://localhost:4200.
 
-## Development server
+##Server Application
+Run "npm run run-server" in order to build a server based on Node.js technology. By default the server runs on http://localhost:5000.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Currently the application supports the following features:
+* Connecting to the server
+* Creating rooms with the following configuration
+** Number of players
+** Number of Good alignment characters
+** Number of Evil alignment characters
+** Special characters (Mordred, Morgana, Merlin, Percival, Lancelot, Oberon, Assassin)
+** Mission configuration (Number of commpanions required on the mission / Number of 'fails' to fail the mission)
+* Game Process
+** Choosing the leader
+** As a leader choosing the requred companions on the current mission
+** Players can vote whether they agree on the team or disagree
+** If the team is accepted the players have the ability to mark the mission as Fail or Success
+** If the team is not accepted anohter leader is chosen
+** Players have the ability to view their cards and check what's their special features (if they have any)
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Planned features:
+* Lady of the lake expansion
+* Excalibur expansion
+* End Game Assassination of Merlin
+* Lancelots changing sides on the Loyalty Tokens
