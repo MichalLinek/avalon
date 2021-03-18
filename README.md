@@ -1,4 +1,4 @@
-# BoardGameAvalon
+# BoardGame 'Avalon'
 The project is a mobile implementation of the famous BoardGame called "Avalon". 
 The application is divided into two parts server and client.
 The connection between the two is based on the sockets.
@@ -18,16 +18,16 @@ Currently the application supports the following features:
   * Special characters (Mordred, Morgana, Merlin, Percival, Lancelot, Oberon, Assassin)
   * Mission configuration (Number of commpanions required on the mission / Number of 'fails' to fail the mission)
 * Game Process
-  * Choosing the leader
-  * As a leader choosing the requred companions on the current mission
+  * Choosing the Leader
+  * As a Leader choosing the requred companions on the current mission
   * Players can vote whether they agree on the team or disagree
   * If the team is accepted the players have the ability to mark the mission as Fail or Success
-  * If the team is not accepted anohter leader is chosen
+  * If the team is not accepted, another Leader is chosen
   * Players have the ability to view their cards and check what's their special features (if they have any)
 
 
 Planned features:
-* Lady of the lake expansion
-* Excalibur expansion
+* "Lady of the Lake" expansion
+* "Excalibur" expansion
 * End Game Assassination of Merlin
-* Lancelots changing sides on the Loyalty Tokens
+* Lancelots changing sides based on the "Loyalty" tokens
