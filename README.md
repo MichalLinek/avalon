@@ -12,18 +12,18 @@ Run "npm run run-server" in order to build a server based on Node.js technology.
 Currently the application supports the following features:
 * Connecting to the server
 * Creating rooms with the following configuration
-** Number of players
-** Number of Good alignment characters
-** Number of Evil alignment characters
-** Special characters (Mordred, Morgana, Merlin, Percival, Lancelot, Oberon, Assassin)
-** Mission configuration (Number of commpanions required on the mission / Number of 'fails' to fail the mission)
+  * Number of players
+  * Number of Good alignment characters
+  * Number of Evil alignment characters
+  * Special characters (Mordred, Morgana, Merlin, Percival, Lancelot, Oberon, Assassin)
+  * Mission configuration (Number of commpanions required on the mission / Number of 'fails' to fail the mission)
 * Game Process
-** Choosing the leader
-** As a leader choosing the requred companions on the current mission
-** Players can vote whether they agree on the team or disagree
-** If the team is accepted the players have the ability to mark the mission as Fail or Success
-** If the team is not accepted anohter leader is chosen
-** Players have the ability to view their cards and check what's their special features (if they have any)
+  * Choosing the leader
+  * As a leader choosing the requred companions on the current mission
+  * Players can vote whether they agree on the team or disagree
+  * If the team is accepted the players have the ability to mark the mission as Fail or Success
+  * If the team is not accepted anohter leader is chosen
+  * Players have the ability to view their cards and check what's their special features (if they have any)
 
 
 Planned features:
