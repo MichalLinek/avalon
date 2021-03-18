@@ -1,15 +1,12 @@
-import { AlignmentType } from "../common/constants/Enums/AlignmentType";
-import { CharacterType } from "../common/constants/Enums/CharacterType";
-import { CampaignDatabase } from "../common/db/CampaignDatabase";
-import { CharactersDB } from "../common/db/CharactersDB";
-import { Campaign } from "../common/models/campaign.model";
-import { Player } from "./models/player.model";
+import { AlignmentType, CharacterType } from "../app/enums";
+import { Campaign, Player } from "../app/models/game";
+import { CharactersDatabase, CampaignDatabase } from "./../app/db";
 
 export class Game {
     public static attachCharactersToSockets(campaign: Campaign, players: Player[]) {
         let specialCharacterIds = campaign.specialCharactersIds;
-        let commonEvil = CharactersDB.filter(x => x.type === CharacterType.CommonEvil).map(x => x.id);
-        let commonGood = CharactersDB.filter(x => x.type === CharacterType.CommonGood).map(x => x.id);
+        let commonEvil = CharactersDatabase.filter(x => x.type === CharacterType.CommonEvil).map(x => x.id);
+        let commonGood = CharactersDatabase.filter(x => x.type === CharacterType.CommonGood).map(x => x.id);
         let randomNormalGoodCharacterIds = [];
         let randomNormalEvilCharacterIds = [];
 
@@ -17,7 +14,7 @@ export class Game {
         let numberOfCommonGood = campaign.numberOfGood;
 
         for (let i = 0; i < campaign.specialCharactersIds.length; i ++) {
-            let character = CharactersDB.find(x => x.id === campaign.specialCharactersIds[i]);
+            let character = CharactersDatabase.find(x => x.id === campaign.specialCharactersIds[i]);
             if (character.alignment === AlignmentType.Good) numberOfCommonGood -= 1;
             else numberOfCommonEvil -= 1
         }
@@ -40,7 +37,7 @@ export class Game {
         
         for (let i = 0 ; i < players.length; i++) {
             let selectedId = Math.floor(Math.random() * allIds.length);
-            let selectedCharacter = CharactersDB.filter(x => x.id === allIds[selectedId])[0];
+            let selectedCharacter = CharactersDatabase.filter(x => x.id === allIds[selectedId])[0];
             
             players[i].characterCard = selectedCharacter;
             allIds.splice(selectedId, 1);
@@ -54,7 +51,7 @@ export class Game {
             switch(players[i].characterCard.type) {
                 case CharacterType.CommonEvil: {
                     let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon).map(x => x.userName);
-                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone.';
                     players[i].characterCard.additionalInfo = "You are common evil. " + additionalMessage;
                     break;
                 }
@@ -64,13 +61,13 @@ export class Game {
                 }
                 case CharacterType.Mordred: {
                     let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon).map(x => x.userName);
-                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone.';
                     players[i].characterCard.additionalInfo = "You are unknown to Merlin. " + additionalMessage;
                     break;
                 }
                 case CharacterType.Assassin: {
                     let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon).map(x => x.userName);
-                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone.';
                     players[i].characterCard.additionalInfo = "You have to kill Merlin at the end of the game. " + additionalMessage;
                     break;
                 }
@@ -81,7 +78,7 @@ export class Game {
                 case CharacterType.Morgana: {
                     let friends = otherSockets.filter(x => x.characterCard.alignment === AlignmentType.Evil && x.characterCard.type !== CharacterType.Oberon)
                     .map(x => x.userName);
-                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone';
+                    let additionalMessage = friends.length ? 'Your accomplices are ' + friends.join() : 'You are alone.';
                     players[i].characterCard.additionalInfo = "You are reveiled to Percival with Merlin. " + additionalMessage;
                     break;
                 }
@@ -98,7 +95,7 @@ export class Game {
                     break;
                 }
                 case CharacterType.LancelotGood: {
-                    players[i].characterCard.additionalInfo = "You don't know your accomplices. Watch out for Lancelot changing cards";
+                    players[i].characterCard.additionalInfo = "You don't know your accomplices. Watch out for Lancelot changing cards.";
                     break;
                 }
                 case CharacterType.Percival: {
@@ -137,7 +134,7 @@ export class Game {
     }
 
     public static getSpecialCharacters() {
-        return CharactersDB.filter(x => x.type > 1);
+        return CharactersDatabase.filter(x => x.type > 1);
     }
 
     public static getDefaultCampaign(numberOfPlayers: number): Campaign | undefined {

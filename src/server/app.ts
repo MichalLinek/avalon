@@ -1,9 +1,16 @@
-import { Room, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { Game } from './game';
-import { Player } from './models/player.model';
-import { GameRoom } from '../common/models/game-room.model';
-import { MessageType } from '../common/constants/Enums/MessageType';
-import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from '../common/requests';
+import { GameRoomCreateRequest,
+    InitGameRequestModel,
+    JoinRoomRequestModel,
+    LeaveRoomRequestModel,
+    PlayerPlannedOnMissionRequestModel,
+    StartVotingRequestModel,
+    TeamVoteRequestModel,
+    UserValidRequest,
+    VoteMissionRequestModel,
+    WaitingRomPlayerUpdateRequest
+} from './../app/models/requests';
 import { 
     PlayersInRoomResponse,
     UserValidResponse,
@@ -20,9 +27,10 @@ import {
     VotingFailResponse,
     AllMissionsCompletedResponse,
     MissionVotesResultResponse
- } from "../common/responses";
-import { request } from 'http';
-import { MissionResultType } from '../common/constants/Enums/MissionResultType';
+ } from "./../app/models/responses";
+ import { request } from 'http';
+import { GameRoom, Player } from '../app/models/game';
+import { MessageType, MissionResultType } from '../app/enums';
 
 let path = require('path');
 let express = require('express');
@@ -110,7 +118,6 @@ export class Server {
                 // socket["userName"] = parsedMsg.userName;
                 // io.emit('message', msg);    
             });
-
             socket.on(MessageType.GET_GAME_DETAILS, () => {
                 console.log('write output');
                 let characters = Game.getSpecialCharacters();
@@ -201,33 +208,6 @@ export class Server {
                 io.sockets.in(room).emit(MessageType.GAME_START, response);
                 this.initGame(room);
             });
-
-            // socket.on('playerUpdate', (data) => {
-            //     let player = JSON.parse(data);
-            //     let roomWithPrefix = this.roomPrefix + player.Room;
-            //     let sockets = this.getUsersInRoom(roomWithPrefix);
-            //     let foundSocket = sockets.filter(x => x.userName === player.Name)[0];
-                
-            //     if (foundSocket) {
-            //         foundSocket.ready = player.ready;
-            //         let updatedPlayers = [];
-            //         for(let i = 0 ; i < sockets.length; i ++ ) {
-            //             updatedPlayers.push(
-            //             {
-            //                 Name : sockets[i].userName,
-            //                 Ready : sockets[i].ready
-            //             });
-            //         }
-
-            //         let room = io.sockets.adapter.rooms[roomWithPrefix];
-            //         if (room) {
-            //             let socketsLimit = room["GameOptions"].playersLimit;
-            //             let maxLimitOfPlayers = room["GameOptions"].numberOfGood + room["GameOptions"].numberOfEvil + room["GameOptions"].specialCharacters.length;
-            //             let data = { players: updatedPlayers, availablePlayers: sockets.length, maxLimit: maxLimitOfPlayers};
-            //             io.sockets.in(roomWithPrefix).emit('playersInRoom', data);
-            //         }
-            //     }
-            // });
 
             socket.on(MessageType.WAITING_ROOM_PLAYER_UPDATE, (request) => {
                 let data: WaitingRomPlayerUpdateRequest = JSON.parse(request);
@@ -355,7 +335,6 @@ export class Server {
                 console.log('voteInMission Start');
                 let data: VoteMissionRequestModel = JSON.parse(request);
                 let player = this.getPlayerFromSocketId(socket.id);
-                //let roomWithPrefix = this.roomPrefix + player.roomId;
                 console.log('player room is ' + player.roomId);
                 console.log(this.rooms.keys());
                 let room = this.rooms.get(player.roomId);
@@ -474,36 +453,6 @@ export class Server {
         }
     }
 
-    // public initGame(roomId: string) {
-    //     let sockets = this.getUsersInRoom(roomId);
-    //     let updatedPlayers = [];
-
-    //     for(let i = 0 ; i < sockets.length; i ++ ) {
-    //         updatedPlayers.push(
-    //         {
-    //             Name : sockets[i]["userName"],
-    //             Ready : false,
-    //             IsLeader : false,
-    //             IsGoingOnAMission : false
-    //         });
-    //     }
-    //     let randomPlayer = Math.floor(Math.random() * updatedPlayers.length);
-    //     var pl = updatedPlayers[randomPlayer]
-    //     if (pl) {
-    //         pl.IsLeader = true;
-    //     }
-
-        //let foundRoom = io.sockets.adapter.rooms[room];
-        
-        // let mission = foundRoom["GameOptions"].Campaign.Missions[foundRoom["GameOptions"].MissionId];
-        // foundRoom["GameOptions"].Campaign.Players = updatedPlayers;
-        // mission.VotingFailed = 0;
-        // mission.Votes = [];
-        // mission.SuccessFailureVote = [];
-        // let data = { type : 'initGame', players: updatedPlayers, mission : mission, campaign: foundRoom["GameOptions"].Campaign };
-       // io.sockets.in(room).emit('initGame', data);
-    // }
-
     public getSocketByUserName(userName) {
         var clients = io.sockets.clients; 
         for (var client in clients) {
@@ -512,9 +461,7 @@ export class Server {
             }
         }
     }
-
 }
-
 
 new Server();
 http.listen(5000, () => {

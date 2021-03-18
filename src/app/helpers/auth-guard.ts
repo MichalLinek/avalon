@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
-import { ChatService } from '../chat.service';
-import { UserGlobal } from '../user-global.model';
-import { NavigationPaths } from './navigation-paths';
+import { NavigationPaths } from '../enums';
+import { UserGlobal } from '../globals';
+import { SocketService } from '../services';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   
-  constructor(public auth: ChatService, public router: Router) {}
+  constructor(public auth: SocketService, public router: Router) {}
 
   public canActivate(): boolean {
     if (!UserGlobal.userName) {

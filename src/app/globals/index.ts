@@ -1,0 +1,1 @@
+export { UserGlobal } from "./user-global.model";

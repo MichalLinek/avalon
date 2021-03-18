@@ -9,8 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "run-server": "concurrently \"tsc src/server/app.ts --outDir dist -w\" \" Xcopy  /S /I /E src\\common\\images dist\\server\\images \" \" nodemon dist/server/app.js\"",
-    "debug-server": "concurrently \"tsc src/server/app.ts --outDir dist -w\" \" Xcopy  /S /I /E src\\common\\images dist\\server\\images \"  \" nodemon --inspect dist/server/app.js\""
+    "run-server": "concurrently \"tsc src/server/app.ts --outDir dist -w\" \" nodemon dist/server/app.js\"",
+    "debug-server": "concurrently \"tsc src/server/app.ts --outDir dist -w\" \" nodemon --inspect dist/server/app.js\""
   },
   "private": true,
   "dependencies": {
