@@ -37,11 +37,10 @@ export class WelcomeComponent implements OnInit, OnDestroy {
           this.notificationService.emitChange('User with given name already exists');
         }
       }
-    }), (error) => console.log('Error' + error);
+    }), (error) => {};
   }
 
   public setUserName(): void {
-    console.log(this.userName);
     this.chat.setUserName(this.userName);
   }
 }

@@ -63,11 +63,9 @@ export class Server {
 
     constructor() {
         io.on('reconnection', (socket: Socket) => {
-            console.log('some reconnection performed');
         });
 
         io.on('connection', (socket: Socket) => {
-            console.log('user connected');
 
             socket.on('disconnect', () =>  {
                 let roomId = null;
@@ -77,7 +75,6 @@ export class Server {
                     this.activeUsers.delete(socket.id);
                     this.nickNames.delete(user!.userName.toLocaleLowerCase());
                 } 
-                console.log('user disconnected');
 
                 
                 if (roomId) {
@@ -86,7 +83,6 @@ export class Server {
             });
 
             socket.on('reconnect', () => {
-                console.log('reconnect fired');
             });
 
             socket.on(MessageType.AVAILABLE_ROOMS, () => {
@@ -100,7 +96,6 @@ export class Server {
                 // io.emit('message', msg);    
             });
             socket.on(MessageType.GET_GAME_DETAILS, () => {
-                console.log('write output');
                 let characters = Game.getSpecialCharacters();
                 let campaigns = Game.getDefaultCampaigns();
 
@@ -113,7 +108,6 @@ export class Server {
             });
 
             socket.on(MessageType.CREATE_ROOM, (request: string) => {
-                console.log(request);
                 let player = this.getPlayerFromSocketId(socket.id);
                 if (!player) return;
                 let parsedRequest: GameRoomCreateRequest = JSON.parse(request);
@@ -137,7 +131,6 @@ export class Server {
 
             socket.on(MessageType.SET_USERNAME, (data: string) => {
                 let request: UserValidRequest = JSON.parse(data)
-                console.log(request);
                 let uName = request.userName.toLowerCase();
                 const valid = this.validateUser(uName);
                 
@@ -152,9 +145,6 @@ export class Server {
                         this.activeUsers.set(socket.id, new Player(socket.id, request.userName));
                     }
                 }
-                console.log(this.activeUsers);
-                console.log(this.nickNames);
-                console.log(socket.id);
                 const response: UserValidResponse = { type: MessageType.SET_USERNAME, isUserValid : valid }
                 socket.emit(MessageType.SET_USERNAME, response);
             });
@@ -249,7 +239,6 @@ export class Server {
             });
 
             socket.on(MessageType.VOTE_FOR_TEAM, (request: string) => {
-                console.log('voteForTeam Start');
                 let data: TeamVoteRequestModel = JSON.parse(request);
                 if (!this.activeUsers.has(socket.id)) return;
 
@@ -273,12 +262,9 @@ export class Server {
                     players.push(this.getPlayerFromSocketId(users[i].id))
                 }
                 let numberOfPlayersWhoVoted = players.filter(x => x.hasVoted);
-                console.log('voted');
-                console.log(numberOfPlayersWhoVoted.length);
                 if (numberOfPlayersWhoVoted.length === users.length) {
                     let mission = room.campaign.missions[room.campaign.currentMission];
                     // Majority of accepts:
-                    console.log('voting success');
                     let votedFor = numberOfPlayersWhoVoted.filter(x => x.voteValue);
                     let votedAgainst = numberOfPlayersWhoVoted.filter(x => !x.voteValue);
                     if (votedFor.length > votedAgainst.length) {
@@ -291,7 +277,6 @@ export class Server {
                     }
                     else {
                         // Majority didn't agree
-                        console.log('voting Failed');
                         room.campaign.currentVotingFails += 1;
                         if (room.campaign.currentVotingFails === 5) {// TODO!!!
                             const outputData = { type: 'endGame', evilWin: true};
@@ -303,7 +288,6 @@ export class Server {
 
                         leaderId = (leaderId + 1) % players.length;
                         players[leaderId].isLeader = true;
-                        console.log(players[leaderId].userName + ' is a leader');
                         for (let i = 0; i < players.length; i ++) {
                             players[i].hasVoted = false;
                             players[i].voteValue = null;
@@ -319,18 +303,13 @@ export class Server {
             });
 
             socket.on(MessageType.VOTE_MISSION, (request: string) => {
-                console.log('voteInMission Start');
                 let data: VoteMissionRequestModel = JSON.parse(request);
                 let player = this.getPlayerFromSocketId(socket.id);
-                console.log('player room is ' + player.roomId);
-                console.log(this.rooms.keys());
                 let room = this.rooms.get(player.roomId);
                 let mission = room.campaign.missions[room.campaign.currentMission];
                 
                 mission.currentVotes.push(data.missionSuccessVote ? MissionResultType.Success : MissionResultType.Fail);
-                console.log('compare ' + mission.currentVotes.length + ' ' + mission.numberOfCompanions);
                 if (mission.currentVotes.length === mission.numberOfCompanions) {
-                    console.log('end of voting for mission');
                     let users: Socket[] = this.getUsersInRoom(player.roomId);
                     let players: Player[] = [];
                     for (let i = 0; i < users.length; i++ ) {
@@ -351,9 +330,7 @@ export class Server {
                     }
 
                     let endGame = room.campaign.missions.length === room.campaign.currentMission;
-                    console.log('end Game' + endGame);
                     if (endGame) {
-                        console.log('Ending Game');
                         let evilWin = room.campaign.missions.filter(x => x.isSuccess).length < room.campaign.missions.filter(x => !x.isSuccess).length;
                         let response: AllMissionsCompletedResponse = {
                             type: MessageType.END_GAME,
@@ -362,20 +339,17 @@ export class Server {
                         io.sockets.in(player.roomId).emit(MessageType.END_GAME, response);
                     }
                     else {
-                        console.log("NOT ENDING GAME - " + room.campaign.currentMission);
                         let response: MissionVotesResultResponse = {
                             type: MessageType.MISSION_VOTES_RESULT,
                             lastMission: mission,
                             players: players
                         }
-                        console.log('send mission results to room ' + player.roomId);
                         io.sockets.in(player.roomId).emit(MessageType.MISSION_VOTES_RESULT, response);
                     }
                 }
             });
 
             socket.on(MessageType.START_VOTING, (request: string) => {
-                console.log('started voting');
                 let requestData: StartVotingRequestModel = JSON.parse(request);
                 let roomWithPrefix = this.roomPrefix + requestData.roomId;
                 if (this.rooms.has(roomWithPrefix)) {
@@ -383,7 +357,6 @@ export class Server {
                         type: MessageType.START_VOTING,
                         players: requestData.players
                     }
-                    console.log(request);
                     io.sockets.in(roomWithPrefix).emit(MessageType.START_VOTING, request);
                 }
             });
@@ -488,5 +461,4 @@ export class Server {
 
 new Server();
 http.listen(5000, () => {
-    console.log('started on port 5000');
 });

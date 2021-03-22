@@ -31,7 +31,7 @@ export class SelectRoomComponent implements OnInit, OnDestroy {
         let data = msg as AvailableRoomsResponse;
         this.availableRooms = data.rooms
       }
-      (error) => console.log(error);
+      (error) => {};
     });
     this.chat.sendRequestForRooms();
   }

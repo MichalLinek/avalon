@@ -97,9 +97,7 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   }
 
   public setDefaultCampaign(): void {
-    console.log(this.room.campaign.specialCharactersIds);
     let campaign = this.defaultCampaigns.find(x => x.numberOfPlayers == this.room.campaign.numberOfPlayers);
-    console.log(campaign);
     if (campaign) {
       this.room.campaign = {...campaign};
     }

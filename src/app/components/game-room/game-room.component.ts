@@ -87,7 +87,6 @@ export class GameRoomComponent implements OnInit, OnDestroy {
           UserGlobal.win = this.characterCard.alignment === AlignmentType.Good && !msg.evilWin;
           this.router.navigate([NavigationPaths.endGame]);
       } else if (msg.type === MessageType.MISSION_VOTES_RESULT) {
-        console.log('mission results');
         let data = msg as MissionVotesResultResponse;
         this.missions[this.currentMission].isSuccess = data.lastMission.isSuccess;
         if (data.lastMission.isSuccess) {
@@ -113,7 +112,7 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         console.error('What kind of message is that ?');
         console.error(msg);
       }
-    }), (error) => console.log('Error' + error);
+    }), (error) => {};
 
     this.chat.initGame();
   }
@@ -165,9 +164,7 @@ export class GameRoomComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       if (result != null) {
-        console.log('sending to service' + result);
         this.chat.voteForMission(result);
       }
     });
@@ -191,8 +188,6 @@ export class GameRoomComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result);
       if (result != null) {
         this.chat.voteForPlayer(result);
       }

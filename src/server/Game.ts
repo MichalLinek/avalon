@@ -130,7 +130,6 @@ export class Game {
         const len = players.length;
         let randomPlayer = players[Math.floor(Math.random() * len)];
         randomPlayer.isLeader = true;
-        console.log(randomPlayer.userName + ' is a leader!!');
     }
 
     public static getSpecialCharacters() {

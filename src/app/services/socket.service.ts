@@ -155,7 +155,6 @@ export class SocketService {
 
   public voteForMission(voteFor: boolean): void {
     const socketMessage = new SocketMessage();
-    console.log('my vote for mission is ' + voteFor);
     socketMessage.MessageType = MessageType.VOTE_MISSION;
     let request: VoteMissionRequestModel = {
       missionSuccessVote: voteFor

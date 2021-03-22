@@ -35,7 +35,7 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         this.maxLimit = UserGlobal.room.campaign.numberOfPlayers;
         this.availablePlayers = request.players.length;
       }
-    }), (error) => console.log('Error' + error);
+    }), (error) => {};
 
     this.chat.sendRequestForPlayersInRooms(UserGlobal.room.name);
   }
