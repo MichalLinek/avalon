@@ -1,4 +1,6 @@
+import { GameRoomAvailability } from "../game";
+
 export class AvailableRoomsResponse {
     public type: string;
-    public roomIds: string[];
+    public rooms: GameRoomAvailability[];
 }

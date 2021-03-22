@@ -5,11 +5,9 @@
     </p>
 </div>
 <div *ngIf="availableRooms.length > 0">
-    <p>
-    Available Rooms :
-    </p>
-    <div *ngFor="let roomName of availableRooms" style="margin-top:20px">
-        <button mat-raised-button (click)="joinRoom(roomName)">{{roomName}}</button>
+    <p>Available Rooms :</p>
+    <div *ngFor="let room of availableRooms" style="margin-top:20px">
+        <button [disabled]="room.current === room.total" mat-raised-button (click)="joinRoom(room.roomId)">{{room.roomId}} {{room.current}}/{{room.total}}</button>
     </div>
 </div>
 <div style="margin-top: 20px;">

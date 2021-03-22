@@ -10,6 +10,7 @@
             <mat-slider class="full-width" min="2" max="10" name="playersNumber" [(ngModel)] = "room.campaign.numberOfPlayers">
             </mat-slider>
         </div>
+        <button type="button" (click)="setDefaultCampaign()" mat-raised-button class="mat-primary lower-distance-from-button">Set Default Campaign</button>
     <div style="width: 400px">
         <mat-accordion style="width: 400px">
             <mat-expansion-panel class="green-background">
@@ -31,7 +32,7 @@
                 <mat-expansion-panel-header>
                     <mat-panel-title>Special Characters</mat-panel-title>
                 </mat-expansion-panel-header>
-                    <mat-selection-list name="specialCharacters" [(ngModel)]="room.campaign.specialCharactersIds">
+                    <mat-selection-list name="specialCharacters">
                         <mat-list-option *ngFor="let specialCharacter of specialCharacters" [value]="specialCharacter.id" [selected]="room.campaign.specialCharactersIds.indexOf(specialCharacter.id) >= 0">
                         {{ specialCharacter.name }} - {{ specialCharacter.description}}
                         </mat-list-option>

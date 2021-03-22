@@ -26,6 +26,7 @@ export class GameRoomComponent implements OnInit, OnDestroy {
   public afterSelectingCompanions: boolean;
   public currentMission: number;
   public IsVoteButtonActive: boolean;
+  public playersOnTheMission: Player[] = [];
 
   private subscription: ISubscription;
 
@@ -47,7 +48,8 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         player.isGoingOnAMission = data.player.isGoingOnAMission;
       } else if (msg.type === MessageType.START_VOTING) {
         let data = msg as StartVotingResponse;
-        this.openCompanionVoteDialog(data.players);
+        this.playersOnTheMission = data.players;
+        this.openCompanionVoteDialog();
         this.afterSelectingCompanions = true;
       } else if (msg.type === MessageType.VOTE_FOR_TEAM) {
         let data = msg as  TeamVoteRequestResponse;
@@ -139,6 +141,11 @@ export class GameRoomComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  public isPlayerALeader() {
+    let pl = this.getPlayer();
+    return pl?.isLeader;
+  }
+
   private getPlayer(): Player {
     const userName = UserGlobal.userName;
     return this.players.find(x => x.userName  === userName); 
@@ -175,11 +182,11 @@ export class GameRoomComponent implements OnInit, OnDestroy {
     });
   }
 
-  public openCompanionVoteDialog(players: Player[]): void {
+  public openCompanionVoteDialog(): void {
     const dialogRef = this.dialog.open(CompanionVoteDialog, {
       width: '400px',
       data: { 
-        players: players.filter(x => x.isGoingOnAMission)
+        players: this.playersOnTheMission
       }
     });
 

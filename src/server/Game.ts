@@ -91,7 +91,7 @@ export class Game {
                         x.characterCard.type !== CharacterType.Mordred && 
                         x.characterCard.type !== CharacterType.Oberon)
                     .map(x => x.userName);
-                    players[i].characterCard.additionalInfo = "Your enemies are " + enemies.join();
+                    players[i].characterCard.additionalInfo = enemies.length ?  "Your enemies are " + enemies.join() : "You don't know your enemies.";
                     break;
                 }
                 case CharacterType.LancelotGood: {

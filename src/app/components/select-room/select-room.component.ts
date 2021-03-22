@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
 import { MessageType, NavigationPaths } from '../../enums';
 import { UserGlobal } from '../../globals';
+import { GameRoomAvailability } from '../../models/game';
 import { AvailableRoomsResponse, JoinRoomResponse } from '../../models/responses';
 import { SocketService } from '../../services';
 
@@ -13,7 +14,7 @@ import { SocketService } from '../../services';
 })
 export class SelectRoomComponent implements OnInit, OnDestroy {
 
-  public availableRooms: string[] = [];
+  public availableRooms: GameRoomAvailability[] = [];
 
   private subscription: ISubscription;
 
@@ -28,7 +29,7 @@ export class SelectRoomComponent implements OnInit, OnDestroy {
       }
       else if (msg.type === MessageType.AVAILABLE_ROOMS) {
         let data = msg as AvailableRoomsResponse;
-        this.availableRooms = data.roomIds
+        this.availableRooms = data.rooms
       }
       (error) => console.log(error);
     });

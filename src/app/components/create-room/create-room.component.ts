@@ -5,7 +5,7 @@ import { Campaign, CharacterCard, GameRoom, Mission } from '../../models/game';
 import { ISubscription } from 'rxjs/Subscription';
 import { NotificationService, SocketService } from '../../services';
 import { CreateRoomDialog } from '../../dialog-components';
-import { MessageType, NavigationPaths } from '../../enums';
+import { AlignmentType, MessageType, NavigationPaths } from '../../enums';
 import { UserGlobal } from '../../globals';
 import { GameDetailsResponse, GameRoomCreateResponse } from '../../models/responses';
 
@@ -41,10 +41,10 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
           if (createRoomResponse.isRoomCreated) {
             UserGlobal.room = this.room;
             this.router.navigate([NavigationPaths.waitingRoom]);
-            this.notificationService.emitChange('The room has been created');
+            this.notificationService.emitChange('The room has been created.');
           }
           else
-            this.notificationService.emitChange('The room with this name already exists');
+            this.notificationService.emitChange('The room with this name already exists.');
         }
       }
     });
@@ -98,7 +98,7 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
 
   public setDefaultCampaign(): void {
     console.log(this.room.campaign.specialCharactersIds);
-    let campaign = this.defaultCampaigns.find(x => x.numberOfPlayers == this.numberOfPlayers);
+    let campaign = this.defaultCampaigns.find(x => x.numberOfPlayers == this.room.campaign.numberOfPlayers);
     console.log(campaign);
     if (campaign) {
       this.room.campaign = {...campaign};
@@ -113,18 +113,48 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   }
 
   public openRoomSummary(): void {
-    const dialogRef = this.dialog.open(CreateRoomDialog, {
-      width: '400px',
-      data: {
-        campaign: this.room.campaign,
-        specialCharacters: this.specialCharacters
-      }
-    });
+    let validationErrors = this.validate();
+    if (!validationErrors) {
+      const dialogRef = this.dialog.open(CreateRoomDialog, {
+        width: '400px',
+        data: {
+          campaign: this.room.campaign,
+          specialCharacters: this.specialCharacters
+        }
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.createRoom();
-      }
-    });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          if (!validationErrors) {
+            this.createRoom();
+          }
+        }
+      });
+    }
+    else {
+      this.notificationService.emitChange(validationErrors);
+    }
+  }
+
+  public validate(): string {
+    let moreFailsThanCompanionsError = this.room.campaign.missions.find(x => x.numberOfCompanions < x.numberOfFailsToFailMission);
+    if (moreFailsThanCompanionsError)
+      return `Mission ${moreFailsThanCompanionsError.id} has more fails than companions`;
+
+    let moreCompanionsThanPlayersError = this.room.campaign.missions.find(x => x.numberOfCompanions > this.room.campaign.numberOfPlayers);
+    if (moreCompanionsThanPlayersError)
+      return `Mission ${moreCompanionsThanPlayersError.id} has more companions than total number players`;
+
+    let moreEvilSpecialThanTotalEvil = this.specialCharacters.filter(
+      x => x.alignment === AlignmentType.Evil && this.room.campaign.specialCharactersIds.indexOf(x.id) > -1).length > this.room.campaign.numberOfEvil;
+    if (moreEvilSpecialThanTotalEvil)
+      return "There are more special evil characters than total evil players";
+
+    let moreGoodSpecialThanTotalGood = this.specialCharacters.filter(
+      x => x.alignment === AlignmentType.Good && this.room.campaign.specialCharactersIds.indexOf(x.id) > -1).length > this.room.campaign.numberOfGood;
+    if (moreGoodSpecialThanTotalGood)
+      return "There are more special good characters than total good players";
+    
+    return "";
   }
 }

@@ -84,5 +84,5 @@
   <p>You haven't voted yet !!</p>
   <button mat-raised-button class="mat-primary" (click)="openCompanionVoteDialog()">Vote For Team</button>
 </div>
-<button mat-raised-button *ngIf="!afterSelectingCompanions && IsVoteButtonActive" mat-button class="mat-primary" (click)="confirmTeam()">Vote</button>
+<button mat-raised-button *ngIf="isPlayerALeader()" [disabled]="afterSelectingCompanions || !IsVoteButtonActive" mat-button class="mat-primary" (click)="confirmTeam()">Vote</button>
 <button mat-raised-button (click)="openViewCardDialog()" class="mat-primary">View Card</button>

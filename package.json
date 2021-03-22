@@ -1,16 +1,20 @@
 {
   "name": "avalon-client",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "engines": {
+    "node": "10.16.3"
+  },
   "license": "MIT",
   "scripts": {
     "ng": "ng",
+    "start": "nodemon dist/server/app.js",
     "run-client": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "run-server": "concurrently \"tsc src/server/app.ts --outDir dist -w\" \" nodemon dist/server/app.js\"",
-    "debug-server": "concurrently \"tsc src/server/app.ts --outDir dist -w\" \" nodemon --inspect dist/server/app.js\""
+    "run-server": "tsc src/server/app.ts --outDir dist && nodemon dist/server/app.js",
+    "debug-server": "tsc src/server/app.ts --outDir dist && nodemon --inspect dist/server/app.js"
   },
   "private": true,
   "dependencies": {

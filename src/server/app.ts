@@ -28,10 +28,8 @@ import {
     AllMissionsCompletedResponse,
     MissionVotesResultResponse
  } from "./../app/models/responses";
- import { request } from 'http';
-import { GameRoom, Player } from '../app/models/game';
+import { GameRoom, GameRoomAvailability, Player } from '../app/models/game';
 import { MessageType, MissionResultType } from '../app/enums';
-
 let path = require('path');
 let express = require('express');
 let app = express();
@@ -92,24 +90,7 @@ export class Server {
             });
 
             socket.on(MessageType.AVAILABLE_ROOMS, () => {
-                let rooms= [];
-                console.log('sending available rooms');
-                for(var roomName in io.sockets.adapter.rooms) {
-                    if ((roomName.indexOf(this.roomPrefix) > -1)) {
-                        let room = this.rooms.get(roomName);
-                        if (!room.isStarted) {
-                            let roomWithoutPrefix = roomName.replace(this.roomPrefix, "");
-                            rooms.push(roomWithoutPrefix);
-                        }
-                    }
-                }
-
-                let response: AvailableRoomsResponse = {
-                    type: MessageType.AVAILABLE_ROOMS,
-                    roomIds: rooms
-                }
-
-                socket.emit(MessageType.AVAILABLE_ROOMS, response);
+                this.refreshRoomInfo(socket);
             });
 
             socket.on('message', (message) => {
@@ -133,6 +114,8 @@ export class Server {
 
             socket.on(MessageType.CREATE_ROOM, (request: string) => {
                 console.log(request);
+                let player = this.getPlayerFromSocketId(socket.id);
+                if (!player) return;
                 let parsedRequest: GameRoomCreateRequest = JSON.parse(request);
                 const roomId = this.roomPrefix + parsedRequest.gameRoom.name;
                 let response: GameRoomCreateResponse = {
@@ -144,11 +127,11 @@ export class Server {
                 }
                 else {
                     this.rooms.set(roomId, parsedRequest.gameRoom);
-                    let player = this.getPlayerFromSocketId(socket.id);
-                    player!.roomId = roomId;
+                    player.roomId = roomId;
                     socket.join(roomId);
                 }
 
+                this.refreshRoomInfo(null);
                 socket.emit(MessageType.CREATE_ROOM, response);
             });
 
@@ -186,6 +169,7 @@ export class Server {
                     gameRoom: this.rooms.get(roomNameWithPrefix),
                     type: MessageType.JOIN_ROOM
                 }
+                this.refreshRoomInfo(null);
                 socket.emit(MessageType.JOIN_ROOM, response);
             });
 
@@ -194,7 +178,10 @@ export class Server {
                 let roomNameWithPrefix = this.roomPrefix + data.roomId;
                 socket.leave(roomNameWithPrefix);
                 let player = this.getPlayerFromSocketId(socket.id);
-                player!.roomId = null;
+                if (!player) return;
+                player.roomId = null;
+                player.ready = false;
+                this.refreshRoomInfo(null);
                 this.playerInRoomsChanged(roomNameWithPrefix);
             });
 
@@ -460,6 +447,42 @@ export class Server {
                 return client;
             }
         }
+    }
+
+    public refreshRoomInfo(socket: Socket) {
+        var rooms: GameRoomAvailability[] = [];
+        for (var roomName in io.sockets.adapter.rooms) {
+            if ((roomName.indexOf(this.roomPrefix) > -1)) {
+                let room = this.rooms.get(roomName);
+                if (!room.isStarted && room.campaign.numberOfPlayers >= io.sockets.adapter.rooms[roomName].length) {
+                    let roomWithoutPrefix = roomName.replace(this.roomPrefix, "");
+                    
+                    let gameRoomAvailability: GameRoomAvailability = {
+                        current:  io.sockets.adapter.rooms[roomName].length,
+                        total: room.campaign.numberOfPlayers,
+                        roomId: roomWithoutPrefix
+                    };
+                    rooms.push(gameRoomAvailability);
+                }
+            }
+        }
+
+        let sendRoomsResponse: AvailableRoomsResponse = {
+            type: MessageType.AVAILABLE_ROOMS,
+            rooms: rooms
+        }
+
+        if (socket) {
+            socket.emit(MessageType.AVAILABLE_ROOMS, sendRoomsResponse);
+            return;
+        }
+        
+        this.activeUsers.forEach((playerToInform) => {
+            if (!playerToInform.roomId && io.sockets.sockets[playerToInform.socketId]) {
+                let socketToInform = io.sockets.sockets[playerToInform.socketId];
+                socketToInform.emit(MessageType.AVAILABLE_ROOMS, sendRoomsResponse);
+            }
+        });
     }
 }
 
