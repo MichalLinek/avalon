@@ -14,7 +14,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "run-server": "tsc src/server/app.ts --outDir dist && nodemon dist/server/app.js",
-    "debug-server": "tsc src/server/app.ts --outDir dist && nodemon --inspect dist/server/app.js"
+    "debug-server": "tsc src/server/app.ts --outDir dist && nodemon --inspect dist/server/app.js",
+    "heroku-postbuild": "npm run build"
   },
   "private": true,
   "dependencies": {
