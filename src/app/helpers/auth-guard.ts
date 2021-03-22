@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
-import { NavigationPaths } from '../enums';
-import { UserGlobal } from '../globals';
-import { SocketService } from '../services';
+import { NavigationPaths } from '../enums/index';
+import { UserGlobal } from '../globals/index';
+import { SocketService } from '../services/index';
 
 @Injectable()
 export class AuthGuard implements CanActivate {

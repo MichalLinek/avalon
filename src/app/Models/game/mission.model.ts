@@ -1,4 +1,4 @@
-import { MissionResultType } from "../../enums";
+import { MissionResultType } from "../../enums/index";
 
 export class Mission {
     public id: number;

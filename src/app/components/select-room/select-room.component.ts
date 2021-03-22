@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
-import { MessageType, NavigationPaths } from '../../enums';
-import { UserGlobal } from '../../globals';
-import { GameRoomAvailability } from '../../models/game';
-import { AvailableRoomsResponse, JoinRoomResponse } from '../../models/responses';
-import { SocketService } from '../../services';
+import { MessageType, NavigationPaths } from '../../enums/index';
+import { UserGlobal } from '../../globals/index';
+import { GameRoomAvailability } from '../../models/game/index';
+import { AvailableRoomsResponse, JoinRoomResponse } from '../../models/responses/index';
+import { SocketService } from '../../services/index';
 
 @Component({
   selector: 'app-select-room',

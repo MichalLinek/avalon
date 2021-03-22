@@ -1,4 +1,4 @@
-import { GameRoomAvailability } from "../game";
+import { GameRoomAvailability } from "../game/index";
 
 export class AvailableRoomsResponse {
     public type: string;

@@ -3,8 +3,8 @@ import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Rx';
-import { MessageType } from '../enums';
-import { SocketMessage } from '../models/communication';
+import { MessageType } from '../enums/index';
+import { SocketMessage } from '../models/communication/index';
 
 @Injectable()
 export class WebSocketService {

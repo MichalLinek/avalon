@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
-import { MessageType, NavigationPaths } from '../../enums';
-import { UserGlobal } from '../../globals';
-import { Player } from '../../models/game';
-import { PlayersInRoomResponse } from '../../models/responses';
-import { SocketService, NotificationService } from '../../services';
+import { MessageType, NavigationPaths } from '../../enums/index';
+import { UserGlobal } from '../../globals/index';
+import { Player } from '../../models/game/index';
+import { PlayersInRoomResponse } from '../../models/responses/index';
+import { SocketService, NotificationService } from '../../services/index';
 
 @Component({
   selector: 'app-waiting-room',

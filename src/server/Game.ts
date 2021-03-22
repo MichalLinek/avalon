@@ -1,6 +1,6 @@
-import { AlignmentType, CharacterType } from "../app/enums";
-import { Campaign, Player } from "../app/models/game";
-import { CharactersDatabase, CampaignDatabase } from "./../app/db";
+import { AlignmentType, CharacterType } from "../app/enums/index";
+import { Campaign, Player } from "../app/models/game/index";
+import { CharactersDatabase, CampaignDatabase } from "./../app/db/index";
 
 export class Game {
     public static attachCharactersToSockets(campaign: Campaign, players: Player[]) {

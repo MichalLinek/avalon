@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CharacterCard } from '../../models/game';
+import { CharacterCard } from '../../models/game/index';
 
 export interface DialogData {
   characterCard: CharacterCard

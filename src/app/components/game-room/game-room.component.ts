@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
 import { MatDialog } from '@angular/material';
 import { CharacterCard, Mission, Player } from '../../models/game';
-import { NotificationService, SocketService } from '../../services';
-import { AlignmentType, MessageType, NavigationPaths } from '../../enums';
-import { UserGlobal } from '../../globals';
-import { CompanionVoteDialog, MissionVoteDialog, ViewCardDialog } from '../../dialog-components';
-import { InitGameResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, StartVotingResponse, TeamVoteRequestResponse, VotingFailResponse } from '../../models/responses';
+import { NotificationService, SocketService } from '../../services/index';
+import { AlignmentType, MessageType, NavigationPaths } from '../../enums/index';
+import { UserGlobal } from '../../globals/index';
+import { CompanionVoteDialog, MissionVoteDialog, ViewCardDialog } from '../../dialog-components/index';
+import { InitGameResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, StartVotingResponse, TeamVoteRequestResponse, VotingFailResponse } from '../../models/responses/index';
 
 
 @Component({

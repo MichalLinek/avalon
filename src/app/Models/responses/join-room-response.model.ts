@@ -1,4 +1,4 @@
-import { GameRoom } from "../game";
+import { GameRoom } from "../game/index";
 
 export class JoinRoomResponse {
     public gameRoom: GameRoom;

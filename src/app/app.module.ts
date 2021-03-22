@@ -14,8 +14,8 @@ import {
 import { 
   SocketService,
   NotificationService
-} from './services';
-import { WebSocketService } from './services/web-socket.service';
+} from './services/index';
+import { WebSocketService } from './services/index';
 import { MatInputModule } from '@angular/material/input';
 import { 
   MatButtonModule,
@@ -38,8 +38,8 @@ import {
   ViewCardDialog,
   CreateRoomDialog
  } from "./dialog-components/index";
-import { AuthGuard } from './helpers/auth-guard';
-import { NavigationPaths } from './enums';
+import { AuthGuard } from './helpers/index';
+import { NavigationPaths } from './enums/index';
 
 const routes: Routes = [
   { path: NavigationPaths.home, component: WelcomeComponent },

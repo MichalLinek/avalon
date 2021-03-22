@@ -10,7 +10,7 @@ import { GameRoomCreateRequest,
     UserValidRequest,
     VoteMissionRequestModel,
     WaitingRomPlayerUpdateRequest
-} from './../app/models/requests';
+} from './../app/models/requests/index';
 import { 
     PlayersInRoomResponse,
     UserValidResponse,
@@ -27,9 +27,9 @@ import {
     VotingFailResponse,
     AllMissionsCompletedResponse,
     MissionVotesResultResponse
- } from "./../app/models/responses";
-import { GameRoom, GameRoomAvailability, Player } from '../app/models/game';
-import { MessageType, MissionResultType } from '../app/enums';
+ } from "./../app/models/responses/index";
+import { GameRoom, GameRoomAvailability, Player } from '../app/models/game/index';
+import { MessageType, MissionResultType } from '../app/enums/index';
 let path = require('path');
 let express = require('express');
 let app = express();

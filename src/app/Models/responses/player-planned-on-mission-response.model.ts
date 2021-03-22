@@ -1,4 +1,4 @@
-import { Player } from "../game";
+import { Player } from "../game/index";
 
 export class PlayerPlannedOnMissionResponse {
     public type: string;

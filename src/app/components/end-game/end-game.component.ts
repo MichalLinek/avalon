@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavigationPaths } from '../../enums';
-import { UserGlobal } from '../../globals';
+import { NavigationPaths } from '../../enums/index';
+import { UserGlobal } from '../../globals/index';
 
 @Component({
   selector: 'end-game',
