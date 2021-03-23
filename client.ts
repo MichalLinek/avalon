@@ -33,6 +33,7 @@ import { Game } from './src/server/game';
 
 declare var require: any;
 declare var __dirname: any;
+declare var process: any;
 
 let path = require('path');
 let express = require('express');
@@ -473,5 +474,6 @@ export class Server {
 }
 
 new Server();
-http.listen(5000, () => {
+http.listen(process.env.PORT, () => {
+  console.log("Running on the port " + process.env.PORT);
 });
