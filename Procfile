@@ -1,2 +1,2 @@
-server: nodemon dist/server/app.js
-client: ng serve
+avalon-boardgame: nodemon dist/server/app.js
+avalon-boardgame-client: ng serve
