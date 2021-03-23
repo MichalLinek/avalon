@@ -5,18 +5,27 @@ import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Rx';
 import { MessageType } from '../enums/index';
 import { SocketMessage } from '../models/communication/index';
+import { Http } from '@angular/http';
 
 @Injectable()
 export class WebSocketService {
 
   private socket;
+  private server_url: string;
 
-  constructor() {
+  constructor(private http: Http) {
+
+    this.http.get(window.location.origin + '/backend').map((response) => {
+      return response.json();
+    }).subscribe(urlBackend => {
+      this.server_url = urlBackend.url;
+    }, () => {
+      console.log('CanÂ´t find the backend URL, using a failover value');
+    });
   }
-
   public connect(): Subject<MessageEvent> {
-    console.log(environment.ws_url);
-    this.socket = io(environment.ws_url);
+    console.log(this.server_url);
+    this.socket = io(this.server_url);
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
     const observable = new Observable(observer => {

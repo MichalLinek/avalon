@@ -6,6 +6,10 @@ const app = express();
 // Serve only the static files form the dist directory
 app.use(express.static(__dirname + '/dist/client'));
 
+app.get('/backend', (req, res) => {
+    res.json({url: process.env.SERVER_URL})
+  });
+
 app.get('/*', function(req,res) {
     
 res.sendFile(path.join(__dirname+'/dist/client/index.html'));
