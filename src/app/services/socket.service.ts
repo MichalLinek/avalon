@@ -20,15 +20,16 @@ export class SocketService {
       return response;
     }).subscribe(urlBackend => {
       this.server_url = urlBackend.url;
-    }, () => {
-      console.log('CanÂ´t find the backend URL, using a failover value');
-    });
-
-    this.messages = <Subject<any>>wsService
+      this.messages = <Subject<any>>wsService
       .connect(this.server_url)
       .map((response: any): any => {
         return response;
       });
+    }, () => {
+      console.log('CanÂ´t find the backend URL, using a failover value');
+    });
+
+    
    }
 
   public validateUserName(userName: string): void {
