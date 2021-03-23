@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  ws_url : 'http://localhost:5000'
+  ws_url: process.env.SERVER_URL
 };

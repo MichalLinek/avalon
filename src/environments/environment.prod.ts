@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  ws_url : 'http://localhost:5000'
+  ws_url: process.env.SERVER_URL
 };

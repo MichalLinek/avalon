@@ -15,6 +15,7 @@ export class WebSocketService {
   }
 
   public connect(): Subject<MessageEvent> {
+    console.log(environment.ws_url);
     this.socket = io(environment.ws_url);
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
