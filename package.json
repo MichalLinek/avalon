@@ -9,13 +9,13 @@
   "scripts": {
     "ng": "ng",
     "run-client": "ng serve",
-    "build": "ng build; tsc src/server/app.ts",
+    "build": "ng build && tsc src/server/app.ts",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "run-server": "tsc && nodemon dist/server/app.js",
     "debug-server": "tsc src/server/app.ts --outDir dist && nodemon --inspect dist/server/app.js",
-    "heroku-postbuild": "if [[ $process.env['APP_TYPE'] == 'SERVER' ]]; then tsc src/server/app.ts --outDir dist && nodemon dist/server/app.js; else ng serve; fi"
+    "start": "tsc src/server/app.ts --outDir dist && nodemon dist/server/app.js"
   },
   "private": true,
   "dependencies": {
