@@ -11,21 +11,12 @@ import { HttpClient } from '@angular/common/http';
 export class WebSocketService {
 
   private socket;
-  private server_url: string;
 
-  constructor(private http: HttpClient) {
-
-    this.http.get(window.location.origin + '/backend').map((response: any) => {
-      return response;
-    }).subscribe(urlBackend => {
-      this.server_url = urlBackend.url;
-    }, () => {
-      console.log('CanÂ´t find the backend URL, using a failover value');
-    });
+  constructor() {
   }
-  public connect(): Subject<MessageEvent> {
-    console.log(this.server_url);
-    this.socket = io(this.server_url);
+  public connect(server_url: string): Subject<MessageEvent> {
+    
+    this.socket = io(server_url);
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
     const observable = new Observable(observer => {

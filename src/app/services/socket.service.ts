@@ -4,18 +4,28 @@ import { Subject } from 'rxjs/Rx';
 
 import { SocketMessage } from '../models/communication/index';
 import { MessageType } from '../enums/index';
-import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from '../models/requests/index';
+import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from '../models/requests';
 import { GameRoom, Player } from '../models/game/index';
 import { UserGlobal } from '../globals/index';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class SocketService {
 
   public messages: Subject<any>;
+  private server_url: string;
  
-  constructor(wsService: WebSocketService) {
+  constructor(wsService: WebSocketService, private http: HttpClient) {
+    this.http.get(window.location.origin + '/backend').map((response: any) => {
+      return response;
+    }).subscribe(urlBackend => {
+      this.server_url = urlBackend.url;
+    }, () => {
+      console.log('CanÂ´t find the backend URL, using a failover value');
+    });
+
     this.messages = <Subject<any>>wsService
-      .connect()
+      .connect(this.server_url)
       .map((response: any): any => {
         return response;
       });
