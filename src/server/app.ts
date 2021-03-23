@@ -30,6 +30,10 @@ import {
 import { GameRoom, GameRoomAvailability, Player } from './../app/models/game';
 import { MessageType, MissionResultType } from './../app/enums';
 import { Game } from './game';
+
+declare var require: any;
+declare var __dirname: any;
+
 let path = require('path');
 let express = require('express');
 let app = express();
