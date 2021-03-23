@@ -1,47 +1,9 @@
+import { MessageType, MissionResultType } from "../app/enums";
+import { GameRoom, GameRoomAvailability, Player } from "../app/models/game";
+import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from "../app/models/requests";
+import { AllMissionsCompletedResponse, AvailableRoomsResponse, GameDetailsResponse, GameRoomCreateResponse, GameStartResponse, InitGameResponse, JoinRoomResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, PlayersInRoomResponse, StartVotingResponse, TeamVoteRequestResponse, UserValidResponse, VotingFailResponse, VotingSuccessResponse } from "../app/models/responses";
+import { Game } from "./game";
 import { Socket } from 'socket.io';
-import { GameRoomCreateRequest,
-    InitGameRequestModel,
-    JoinRoomRequestModel,
-    LeaveRoomRequestModel,
-    PlayerPlannedOnMissionRequestModel,
-    StartVotingRequestModel,
-    TeamVoteRequestModel,
-    UserValidRequest,
-    VoteMissionRequestModel,
-    WaitingRomPlayerUpdateRequest
-} from './../app/models/requests';
-import { 
-    PlayersInRoomResponse,
-    UserValidResponse,
-    GameDetailsResponse,
-    GameRoomCreateResponse,
-    JoinRoomResponse,
-    GameStartResponse,
-    InitGameResponse,
-    AvailableRoomsResponse,
-    StartVotingResponse,
-    PlayerPlannedOnMissionResponse,
-    TeamVoteRequestResponse,
-    VotingSuccessResponse,
-    VotingFailResponse,
-    AllMissionsCompletedResponse,
-    MissionVotesResultResponse
- } from "./../app/models/responses";
-import { GameRoom, GameRoomAvailability, Player } from './../app/models/game';
-import { MessageType, MissionResultType } from './../app/enums';
-import { Game } from './game';
-
-declare var require: any;
-declare var __dirname: any;
-
-let path = require('path');
-let express = require('express');
-let app = express();
-let http = require('http').Server(app);
-let io = require('socket.io')(http);
-
-var dir = path.join(__dirname, '/images');
-app.use('/images', express.static(dir));
 
 export class Server { 
     private rooms = new Map<string, GameRoom>();
@@ -65,11 +27,11 @@ export class Server {
         return null;
     }
 
-    constructor() {
-        io.on('reconnection', (socket: Socket) => {
+    constructor(private io: any) {
+        this.io.on('reconnection', (socket: Socket) => {
         });
 
-        io.on('connection', (socket: Socket) => {
+        this.io.on('connection', (socket: Socket) => {
 
             socket.on('disconnect', () =>  {
                 let roomId = null;
@@ -97,7 +59,7 @@ export class Server {
                 // let parsedMsg = JSON.parse(message);
                 // let msg = parsedMsg.clientId + ' ' + parsedMsg.content;
                 // socket["userName"] = parsedMsg.userName;
-                // io.emit('message', msg);    
+                // this.io.emit('message', msg);    
             });
             socket.on(MessageType.GET_GAME_DETAILS, () => {
                 let characters = Game.getSpecialCharacters();
@@ -186,7 +148,7 @@ export class Server {
                 let response: GameStartResponse = {
                     type: MessageType.GAME_START
                 }
-                io.sockets.in(room).emit(MessageType.GAME_START, response);
+                this.io.sockets.in(room).emit(MessageType.GAME_START, response);
                 this.initGame(room);
             });
 
@@ -239,7 +201,7 @@ export class Server {
                     type: MessageType.PLAYER_MISSION_CHANGE,
                     player: player
                 }
-                io.sockets.in(player.roomId).emit(MessageType.PLAYER_MISSION_CHANGE, response);
+                this.io.sockets.in(player.roomId).emit(MessageType.PLAYER_MISSION_CHANGE, response);
             });
 
             socket.on(MessageType.VOTE_FOR_TEAM, (request: string) => {
@@ -257,7 +219,7 @@ export class Server {
                     type: MessageType.VOTE_FOR_TEAM,
                     player: player
                 }
-                io.sockets.in(roomWithPrefix).emit(MessageType.VOTE_FOR_TEAM, response);
+                this.io.sockets.in(roomWithPrefix).emit(MessageType.VOTE_FOR_TEAM, response);
 
 
                 let users: Socket[] = this.getUsersInRoom(roomWithPrefix);
@@ -388,10 +350,10 @@ export class Server {
 
     public getUsersInRoom(roomId: string): Socket[] {
         var outputlist: Socket[] = [];
-        if (io.sockets.adapter.rooms[roomId]) {
-            var clients_in_the_room = io.sockets.adapter.rooms[roomId].sockets; 
+        if (this.io.sockets.adapter.rooms[roomId]) {
+            var clients_in_the_room = this.io.sockets.adapter.rooms[roomId].sockets; 
             for (var clientId in clients_in_the_room) {
-                outputlist.push(io.sockets.connected[clientId]);
+                outputlist.push(this.io.sockets.connected[clientId]);
             }
         }
         return outputlist; 
@@ -413,12 +375,12 @@ export class Server {
                 players: updatedPlayers,
                 type: MessageType.PLAYERS_IN_ROOM
             }
-            io.sockets.in(roomId).emit(MessageType.PLAYERS_IN_ROOM, response);
+            this.io.sockets.in(roomId).emit(MessageType.PLAYERS_IN_ROOM, response);
         }
     }
 
     public getSocketByUserName(userName) {
-        var clients = io.sockets.clients; 
+        var clients = this.io.sockets.clients; 
         for (var client in clients) {
             if (client["userName"] === userName) {
                 return client;
@@ -428,14 +390,14 @@ export class Server {
 
     public refreshRoomInfo(socket: Socket) {
         var rooms: GameRoomAvailability[] = [];
-        for (var roomName in io.sockets.adapter.rooms) {
+        for (var roomName in this.io.sockets.adapter.rooms) {
             if ((roomName.indexOf(this.roomPrefix) > -1)) {
                 let room = this.rooms.get(roomName);
-                if (!room.isStarted && room.campaign.numberOfPlayers >= io.sockets.adapter.rooms[roomName].length) {
+                if (!room.isStarted && room.campaign.numberOfPlayers >= this.io.sockets.adapter.rooms[roomName].length) {
                     let roomWithoutPrefix = roomName.replace(this.roomPrefix, "");
                     
                     let gameRoomAvailability: GameRoomAvailability = {
-                        current:  io.sockets.adapter.rooms[roomName].length,
+                        current:  this.io.sockets.adapter.rooms[roomName].length,
                         total: room.campaign.numberOfPlayers,
                         roomId: roomWithoutPrefix
                     };
@@ -455,14 +417,10 @@ export class Server {
         }
         
         this.activeUsers.forEach((playerToInform) => {
-            if (!playerToInform.roomId && io.sockets.sockets[playerToInform.socketId]) {
-                let socketToInform = io.sockets.sockets[playerToInform.socketId];
+            if (!playerToInform.roomId && this.io.sockets.sockets[playerToInform.socketId]) {
+                let socketToInform = this.io.sockets.sockets[playerToInform.socketId];
                 socketToInform.emit(MessageType.AVAILABLE_ROOMS, sendRoomsResponse);
             }
         });
     }
 }
-
-new Server();
-http.listen(5000, () => {
-});

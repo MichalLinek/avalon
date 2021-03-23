@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { ISubscription } from 'rxjs/Subscription';
-import { NotificationService, SocketService } from '../../services/index';
-import { UserGlobal } from '../../globals/index';
+import { NotificationService, SocketService } from '../../services';
+import { UserGlobal } from '../../globals';
 
 @Component({
   selector: 'main-root',

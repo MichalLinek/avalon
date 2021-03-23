@@ -1,5 +1,5 @@
-import { MessageType } from "../../enums/index";
-import { Player } from "../game/index";
+import { MessageType } from "../../enums";
+import { Player } from "../game";
 
 export class PlayersInRoomResponse {
     public players: Player[] = [];

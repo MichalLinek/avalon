@@ -1,5 +1,5 @@
-import { MessageType } from "../../enums/index";
-import { Campaign } from "../game/index";
+import { MessageType } from "../../enums";
+import { Campaign } from "../game";
 
 export class GameDetailsResponse {
     public specialCharacters: any[] = [];

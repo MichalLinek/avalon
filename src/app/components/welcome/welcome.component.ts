@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ISubscription } from 'rxjs/Subscription';
-import { MessageType, NavigationPaths } from '../../enums/index';
-import { UserGlobal } from '../../globals/index';
-import { UserValidResponse } from '../../models/responses/index';
-import { SocketService, NotificationService } from '../../services/index';
+import { MessageType, NavigationPaths } from '../../enums';
+import { UserGlobal } from '../../globals';
+import { UserValidResponse } from '../../models/responses';
+import { SocketService, NotificationService } from '../../services';
 
 @Component({
   selector: 'app-welcome',

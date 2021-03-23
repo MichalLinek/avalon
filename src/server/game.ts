@@ -1,5 +1,5 @@
-import { AlignmentType, CharacterType } from "./../app/enums/index";
-import { CampaignDatabase, CharactersDatabase } from "./../app/db/index";
+import { AlignmentType, CharacterType } from "./../app/enums";
+import { CampaignDatabase, CharactersDatabase } from "./../app/db";
 import { Campaign, Player } from "./../app/models/game";
 
 export class Game {

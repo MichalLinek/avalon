@@ -10,12 +10,12 @@ import {
   WaitingRoomComponent,
   GameRoomComponent,
   EndGameComponent
-} from './components/index';
+} from './components';
 import { 
   SocketService,
   NotificationService
-} from './services/index';
-import { WebSocketService } from './services/index';
+} from './services';
+import { WebSocketService } from './services';
 import { MatInputModule } from '@angular/material/input';
 import { 
   MatButtonModule,
@@ -31,17 +31,15 @@ import {
 } from '@angular/material';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
-import { SafePipe } from './pipes/index';
+import { SafePipe } from './pipes';
 import { 
   MissionVoteDialog,
   CompanionVoteDialog,
   ViewCardDialog,
   CreateRoomDialog
- } from "./dialog-components/index";
-import { AuthGuard } from './helpers/index';
-import { NavigationPaths } from './enums/index';
-import { Http } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+ } from "./dialog-components";
+import { AuthGuard } from './helpers';
+import { NavigationPaths } from './enums';
 
 const routes: Routes = [
   { path: NavigationPaths.home, component: WelcomeComponent },
@@ -74,7 +72,6 @@ const routes: Routes = [
     CreateRoomDialog
   ],
   imports: [
-    HttpClientModule,
     BrowserModule,
     RouterModule.forRoot(routes),
     FormsModule,

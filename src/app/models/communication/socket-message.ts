@@ -1,4 +1,4 @@
-import { MessageType } from "../../enums/index";
+import { MessageType } from "../../enums";
 
 export class SocketMessage {
     public MessageType: MessageType;

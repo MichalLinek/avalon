@@ -1,4 +1,4 @@
-import { AlignmentType, CharacterType } from '../../enums/index';
+import { AlignmentType, CharacterType } from '../../enums';
 
 export class CharacterCard {
     public id: number;

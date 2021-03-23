@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { Campaign, CharacterCard, GameRoom, Mission } from '../../models/game/index';
+import { Campaign, CharacterCard, GameRoom, Mission } from '../../models/game';
 import { ISubscription } from 'rxjs/Subscription';
-import { NotificationService, SocketService } from '../../services/index';
-import { CreateRoomDialog } from '../../dialog-components/index';
-import { AlignmentType, MessageType, NavigationPaths } from '../../enums/index';
-import { UserGlobal } from '../../globals/index';
-import { GameDetailsResponse, GameRoomCreateResponse } from '../../models/responses/index';
+import { NotificationService, SocketService } from '../../services';
+import { CreateRoomDialog } from '../../dialog-components';
+import { AlignmentType, MessageType, NavigationPaths } from '../../enums';
+import { UserGlobal } from '../../globals';
+import { GameDetailsResponse, GameRoomCreateResponse } from '../../models/responses';
 
 @Component({
   selector: 'app-create-room',

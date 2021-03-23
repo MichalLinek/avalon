@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Campaign, CharacterCard } from '../../models/game/index';
+import { Campaign, CharacterCard } from '../../models/game';
 
 @Component({
   selector: 'create-room-dialog',

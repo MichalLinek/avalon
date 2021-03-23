@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
-import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Rx';
-import { MessageType } from '../enums/index';
-import { SocketMessage } from '../models/communication/index';
-import { HttpClient } from '@angular/common/http';
+import { MessageType } from '../enums';
+import { SocketMessage } from '../models/communication';
 
 @Injectable()
 export class WebSocketService {
@@ -17,8 +15,6 @@ export class WebSocketService {
   public connect(): Subject<MessageEvent> {
     
     this.socket = io();
-    // We define our observable which will observe any incoming messages
-    // from our socket.io server.
     const observable = new Observable(observer => {
       this.socket.on(MessageType.SET_USERNAME, (data) => {
         observer.next(data);

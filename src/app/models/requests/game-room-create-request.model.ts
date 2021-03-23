@@ -1,4 +1,4 @@
-import { GameRoom } from "../game/index";
+import { GameRoom } from "../game";
 
 export class GameRoomCreateRequest {
     public gameRoom: GameRoom;

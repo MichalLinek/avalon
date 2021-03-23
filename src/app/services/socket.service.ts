@@ -2,19 +2,18 @@ import { Injectable } from '@angular/core';
 import { WebSocketService } from './web-socket.service';
 import { Subject } from 'rxjs/Rx';
 
-import { SocketMessage } from '../models/communication/index';
-import { MessageType } from '../enums/index';
+import { SocketMessage } from '../models/communication';
+import { MessageType } from '../enums';
 import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from '../models/requests';
-import { GameRoom, Player } from '../models/game/index';
-import { UserGlobal } from '../globals/index';
-import { HttpClient } from '@angular/common/http';
+import { GameRoom, Player } from '../models/game';
+import { UserGlobal } from '../globals';
 
 @Injectable()
 export class SocketService {
 
   public messages: Subject<any>;
  
-  constructor(wsService: WebSocketService, private http: HttpClient) {
+  constructor(wsService: WebSocketService) {
     this.messages = <Subject<any>>wsService
       .connect()
       .map((response: any): any => {

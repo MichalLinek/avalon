@@ -1,4 +1,4 @@
-import { Player } from "../game/index";
+import { Player } from "../game";
 
 export class VotingFailResponse {
     public type: string;

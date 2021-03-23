@@ -1,4 +1,4 @@
-import { CharacterCard, Player } from "../game/index";
+import { CharacterCard, Player } from "../game";
 
 export class InitGameResponse {
     public type: string;
