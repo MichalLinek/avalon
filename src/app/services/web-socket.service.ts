@@ -14,9 +14,9 @@ export class WebSocketService {
 
   constructor() {
   }
-  public connect(server_url: string): Subject<MessageEvent> {
+  public connect(): Subject<MessageEvent> {
     
-    this.socket = io(server_url);
+    this.socket = io();
     // We define our observable which will observe any incoming messages
     // from our socket.io server.
     const observable = new Observable(observer => {

@@ -12,24 +12,14 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class SocketService {
 
-  public messages: Subject<any> = new Subject<any>();
-  private server_url: string;
+  public messages: Subject<any>;
  
   constructor(wsService: WebSocketService, private http: HttpClient) {
-    this.http.get(window.location.origin + '/backend').map((response: any) => {
-      return response;
-    }).subscribe(urlBackend => {
-      this.server_url = urlBackend.url;
-      this.messages = <Subject<any>>wsService
-      .connect(this.server_url)
+    this.messages = <Subject<any>>wsService
+      .connect()
       .map((response: any): any => {
         return response;
       });
-    }, () => {
-      console.log('CanÂ´t find the backend URL, using a failover value');
-    });
-
-    
    }
 
   public validateUserName(userName: string): void {
