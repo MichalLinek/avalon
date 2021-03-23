@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class SocketService {
 
-  public messages: Subject<any>;
+  public messages: Subject<any> = new Subject<any>();
   private server_url: string;
  
   constructor(wsService: WebSocketService, private http: HttpClient) {
