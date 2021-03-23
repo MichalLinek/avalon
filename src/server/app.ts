@@ -27,8 +27,8 @@ import {
     AllMissionsCompletedResponse,
     MissionVotesResultResponse
  } from "./../app/models/responses/index";
-import { GameRoom, GameRoomAvailability, Player } from '../app/models/game/index';
-import { MessageType, MissionResultType } from '../app/enums/index';
+import { GameRoom, GameRoomAvailability, Player } from './../app/models/game/index';
+import { MessageType, MissionResultType } from './../app/enums/index';
 import { Game } from './game';
 let path = require('path');
 let express = require('express');
