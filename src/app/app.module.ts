@@ -40,6 +40,8 @@ import {
  } from "./dialog-components/index";
 import { AuthGuard } from './helpers/index';
 import { NavigationPaths } from './enums/index';
+import { Http } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 const routes: Routes = [
   { path: NavigationPaths.home, component: WelcomeComponent },
@@ -72,6 +74,7 @@ const routes: Routes = [
     CreateRoomDialog
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     RouterModule.forRoot(routes),
     FormsModule,

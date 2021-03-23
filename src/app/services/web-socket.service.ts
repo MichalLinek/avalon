@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
 import { Subject } from 'rxjs/Rx';
 import { MessageType } from '../enums/index';
 import { SocketMessage } from '../models/communication/index';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class WebSocketService {
@@ -13,10 +13,10 @@ export class WebSocketService {
   private socket;
   private server_url: string;
 
-  constructor(private http: Http) {
+  constructor(private http: HttpClient) {
 
-    this.http.get(window.location.origin + '/backend').map((response) => {
-      return response.json();
+    this.http.get(window.location.origin + '/backend').map((response: any) => {
+      return response;
     }).subscribe(urlBackend => {
       this.server_url = urlBackend.url;
     }, () => {
