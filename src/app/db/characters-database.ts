@@ -1,5 +1,5 @@
-import { AlignmentType, CharacterType } from "../enums/index";
-import { CharacterCard } from "../models/game/index";
+import { AlignmentType, CharacterType } from "./../enums";
+import { CharacterCard } from "./../models/game";
 
 const relativePath = "/assets/characters/";
 

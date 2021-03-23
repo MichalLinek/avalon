@@ -1,4 +1,4 @@
-import { Campaign, Mission } from "../models/game/index";
+import { Campaign, Mission } from "./../models/game";
 
 export class CampaignDatabase {
     static Campaigns: Campaign[] = [{
