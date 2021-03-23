@@ -16,7 +16,7 @@
     "run-server": "tsc && nodemon dist/server/app.js",
     "debug-server": "tsc src/server/app.ts --outDir dist && nodemon --inspect dist/server/app.js",
     "start": "nodemon client.js",
-    "heroku-postbuild": "ng build --prod"
+    "heroku-postbuild": "ng build"
   },
   "private": true,
   "dependencies": {
