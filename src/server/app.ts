@@ -464,5 +464,6 @@ export class Server {
 }
 
 new Server();
-http.listen(5000, () => {
+http.listen(process.env.PORT, () => {
+    console.log('started listening on ' + process.env.PORT);
 });
