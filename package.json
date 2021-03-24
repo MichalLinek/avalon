@@ -8,7 +8,6 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "run-client": "ng serve",
     "build": "ng build && tsc client.ts -outDir dist",
     "test": "ng test",
     "lint": "ng lint",

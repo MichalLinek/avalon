@@ -1,4 +1,4 @@
-<div class="flex-center">
+<div class="flex-column">
   <mat-table [dataSource]="players" class="mat-elevation-z8" style="width: 100%">
       
     <!--- Note that these columns can be defined in any order.
@@ -29,15 +29,7 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
-  <div style="margin-top: 20px;">
-    <button class="lower-distance-from-button mat-primary" mat-raised-button (click)="readyClicked()">{{!ready ? 'Ready' : 'Not Ready'}}</button>
-  </div>
-
-  <div>
-    <button class="lower-distance-from-button mat-primary" mat-raised-button (click)="requestStartGame()" [disabled]="!isStartActive()">Start Game</button>
-  </div>
-
-  <div>
-    <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button> 
-  </div>
+  <button style="margin-top: 20px;" class="lower-distance-from-button mat-primary" mat-raised-button (click)="readyClicked()">{{!ready ? 'Ready' : 'Not Ready'}}</button>
+  <button class="lower-distance-from-button mat-primary" mat-raised-button (click)="requestStartGame()" [disabled]="!isStartActive()">Start Game</button>
+  <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button> 
 </div>

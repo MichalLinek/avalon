@@ -1,28 +1,28 @@
 <form #avalonForm="ngForm">
-    <div class="flex-center div-space-between">
+    <div class="flex-column div-space-between">
         <div class="flex-horizontal full-width">
             <mat-form-field class="full-width">
                 <input [(ngModel)]="room.name" required matInput placeholder="Enter room name" value="Your Room" name="roomName"> 
             </mat-form-field>
         </div>
-        <div class="flex-center full-width green-background">
+        <div class="flex-column full-width green-background">
             <div class="slider-label">{{ room.campaign.numberOfPlayers }} Players</div>
             <mat-slider class="full-width" min="2" max="10" name="playersNumber" [(ngModel)] = "room.campaign.numberOfPlayers">
             </mat-slider>
         </div>
         <button type="button" (click)="setDefaultCampaign()" mat-raised-button class="mat-primary lower-distance-from-button">Set Default Campaign</button>
-    <div style="width: 400px">
-        <mat-accordion style="width: 400px">
+    <div>
+        <mat-accordion>
             <mat-expansion-panel class="green-background">
                     <mat-expansion-panel-header>
                         <mat-panel-title>General</mat-panel-title>
                     </mat-expansion-panel-header>
-                        <div class="flex-center full-width green-background slider-label padding-top">
+                        <div class="flex-column full-width green-background slider-label padding-top">
                             <p>Good players: {{room.campaign.numberOfGood}}</p>
                             <mat-slider min="1" max="6" name="normalGoodPlayers" #goodNumber [(ngModel)] = "room.campaign.numberOfGood">
                             </mat-slider> 
                         </div>
-                        <div class="flex-center full-width green-background slider-label padding-top">
+                        <div class="flex-column full-width green-background slider-label padding-top">
                             <p>Evil Players {{room.campaign.numberOfEvil}}</p>
                             <mat-slider min="1" max="4" name="normalEvilPlayers" #evilNumber [(ngModel)] = "room.campaign.numberOfEvil">
                             </mat-slider> 
@@ -86,7 +86,7 @@
             </mat-expansion-panel>
         </mat-accordion>
     </div>
-    <div class="flex-center">
+    <div class="flex-column">
         <button [disabled]="avalonForm.form.invalid" type="button" (click)="openRoomSummary()" mat-raised-button class="mat-primary lower-distance-from-button">Create New Room</button>
         <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button>
     </div>

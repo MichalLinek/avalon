@@ -1,4 +1,4 @@
-<div class="flex-center">
+<div class="flex-column">
 <div *ngIf="availableRooms.length == 0">
     <p style="color:red">
         There are no available rooms... Create one!
@@ -6,15 +6,11 @@
 </div>
 <div *ngIf="availableRooms.length > 0">
     <p>Available Rooms :</p>
-    <div *ngFor="let room of availableRooms" style="margin-top:20px">
-        <button [disabled]="room.current === room.total" mat-raised-button (click)="joinRoom(room.roomId)">{{room.roomId}} {{room.current}}/{{room.total}}</button>
-    </div>
+    <div class="flex-column">
+        <button *ngFor="let room of availableRooms" style="margin-top:20px"
+         [disabled]="room.current === room.total" mat-raised-button (click)="joinRoom(room.roomId)">{{room.roomId}} {{room.current}}/{{room.total}}</button>
 </div>
-<div style="margin-top: 20px;">
-    <button mat-raised-button (click)="createRoom()" class="mat-primary">Create New Room</button>
 </div>
-<div style="margin-top: 20px;">
-    <button mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button>
-</div>
-
+    <button style="margin-top: 20px;" mat-raised-button (click)="createRoom()" class="mat-primary">Create New Room</button>
+    <button style="margin-top: 20px;" mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button>
 </div>
