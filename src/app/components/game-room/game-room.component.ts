@@ -9,7 +9,6 @@ import { UserGlobal } from '../../globals';
 import { CompanionVoteDialog, MissionVoteDialog, ViewCardDialog } from '../../dialog-components';
 import { InitGameResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, StartVotingResponse, TeamVoteRequestResponse, VotingFailResponse } from '../../models/responses';
 
-
 @Component({
   selector: 'app-game-room',
   templateUrl: './game-room.component.html',
@@ -17,7 +16,7 @@ import { InitGameResponse, MissionVotesResultResponse, PlayerPlannedOnMissionRes
 })
 export class GameRoomComponent implements OnInit, OnDestroy {
 
-  public displayedColumns: string[] = ['id', 'name', 'leader', 'onMission', 'vote', 'voteValue'];
+  public displayedColumns: string[] = ['name', 'leader', 'onMission', 'voteValue'];
   public missionDisplayedColumns: string[] = ['id', 'numberOfCompanions', 'numberOfFailsToFailMission', 'missionSuccess'];
   public characterCard: CharacterCard = new CharacterCard();
   public missions: Mission[] = UserGlobal.room.campaign.missions;
@@ -84,7 +83,6 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         this.afterSelectingCompanions = false;
         this.IsVoteButtonActive = false;
       } else if (msg.type === MessageType.END_GAME) {
-          UserGlobal.win = this.characterCard.alignment === AlignmentType.Good && !msg.evilWin;
           this.router.navigate([NavigationPaths.endGame]);
       } else if (msg.type === MessageType.MISSION_VOTES_RESULT) {
         let data = msg as MissionVotesResultResponse;

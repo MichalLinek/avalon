@@ -131,6 +131,16 @@ export class SocketService {
     this.messages.next(socketMessage);
   }
 
+  public getGameSummary(): void {
+    const socketMessage = new SocketMessage();
+    socketMessage.MessageType = MessageType.END_GAME_SUMMARY;
+    let request: InitGameRequestModel = {
+      roomId: UserGlobal.room.name
+    }
+    socketMessage.Content = request;
+    this.messages.next(socketMessage);
+  }
+
   public startVoting(players: Player[]): void {
     const socketMessage = new SocketMessage();
     socketMessage.MessageType = MessageType.START_VOTING;

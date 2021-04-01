@@ -1,7 +1,7 @@
 import { MessageType, MissionResultType } from "../app/enums";
 import { GameRoom, GameRoomAvailability, Player } from "../app/models/game";
 import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from "../app/models/requests";
-import { AllMissionsCompletedResponse, AvailableRoomsResponse, GameDetailsResponse, GameRoomCreateResponse, GameStartResponse, InitGameResponse, JoinRoomResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, PlayersInRoomResponse, StartVotingResponse, TeamVoteRequestResponse, UserValidResponse, VotingFailResponse, VotingSuccessResponse } from "../app/models/responses";
+import { AllMissionsCompletedResponse, AvailableRoomsResponse, EndGameResultsResponse, GameDetailsResponse, GameRoomCreateResponse, GameStartResponse, InitGameResponse, JoinRoomResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, PlayersInRoomResponse, StartVotingResponse, TeamVoteRequestResponse, UserValidResponse, VotingFailResponse, VotingSuccessResponse } from "../app/models/responses";
 import { Game } from "./game";
 import { Socket } from 'socket.io';
 
@@ -189,6 +189,28 @@ export class Server {
                 socket.emit(MessageType.INIT_GAME, data);
             });
 
+            socket.on(MessageType.END_GAME_SUMMARY, (request: string) => {
+                let requestData: InitGameRequestModel = JSON.parse(request);
+                let roomWithPrefix = this.roomPrefix + requestData.roomId;
+
+                let sockets = this.getUsersInRoom(roomWithPrefix);
+                let players: Player[] = [];
+
+                for (let i = 0; i < sockets.length; i ++) {
+                    players.push(this.getPlayerFromSocketId(sockets[i].id));
+                }
+                
+                let roomOptions = this.rooms.get(roomWithPrefix);
+                
+                let data: EndGameResultsResponse = {
+                    type: MessageType.END_GAME_SUMMARY,
+                    players: players,
+                    goodAlignmentWon: roomOptions.hasGoodAlignmentWon
+                };
+
+                socket.emit(MessageType.END_GAME_SUMMARY, data);
+            });
+
             socket.on(MessageType.PLAYER_MISSION_CHANGE, (request: string) => {
                 let requestData: PlayerPlannedOnMissionRequestModel = JSON.parse(request);
                 let socketId = requestData.player.socketId;
@@ -298,9 +320,9 @@ export class Server {
                     let endGame = room.campaign.missions.length === room.campaign.currentMission;
                     if (endGame) {
                         let evilWin = room.campaign.missions.filter(x => x.isSuccess).length < room.campaign.missions.filter(x => !x.isSuccess).length;
+                        room.hasGoodAlignmentWon = !evilWin;
                         let response: AllMissionsCompletedResponse = {
-                            type: MessageType.END_GAME,
-                            goodWon: evilWin
+                            type: MessageType.END_GAME
                         }
                         io.sockets.in(player.roomId).emit(MessageType.END_GAME, response);
                     }

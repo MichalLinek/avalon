@@ -6,6 +6,7 @@ export class GameRoom {
     public name: string;
     public campaign: Campaign;
     public isStarted: boolean;
+    public hasGoodAlignmentWon?: boolean;
 
     constructor(roomId: string, name: string) {
         this.roomId = roomId;

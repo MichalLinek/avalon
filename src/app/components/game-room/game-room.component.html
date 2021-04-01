@@ -1,7 +1,11 @@
 <mat-table [dataSource]="players" class="mat-elevation-z8 table-margin-padding">
-<ng-container matColumnDef="id">
-  <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
-  <mat-cell *matCellDef="let element; let i = index;">{{i + 1}}</mat-cell>
+  <!-- Leader -->
+<ng-container matColumnDef="leader">
+  <mat-header-cell *matHeaderCellDef> Leader </mat-header-cell>
+  <mat-cell *matCellDef="let player"> 
+    <mat-checkbox [(ngModel)]="player.isLeader" disabled="disabled">
+  </mat-checkbox> 
+</mat-cell>
 </ng-container>
 
 <!-- Name Column -->
@@ -9,15 +13,6 @@
   <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
   <mat-cell *matCellDef="let player"> {{player.userName}} </mat-cell>
 </ng-container>
-
-<!-- Leader -->
-<ng-container matColumnDef="leader">
-    <mat-header-cell *matHeaderCellDef> Leader </mat-header-cell>
-    <mat-cell *matCellDef="let player"> 
-      <mat-checkbox [(ngModel)]="player.isLeader" disabled="disabled">
-    </mat-checkbox> 
-  </mat-cell>
-  </ng-container>
 
   <!-- Ready -->
 <ng-container matColumnDef="onMission">
@@ -28,21 +23,13 @@
 </mat-cell>
 </ng-container>
 
- <!-- Vote -->
-<ng-container matColumnDef="vote">
-  <mat-header-cell *matHeaderCellDef> Vote </mat-header-cell>
-  <mat-cell *matCellDef="let player"> 
-    <mat-checkbox [(ngModel)]="player.hasVoted" disabled="disabled">
-  </mat-checkbox> 
-</mat-cell>
-</ng-container>
-
 <!-- VoteValue -->
 <ng-container matColumnDef="voteValue">
     <mat-header-cell *matHeaderCellDef> Vote Value </mat-header-cell>
     <mat-cell *matCellDef="let player"> 
-      <span *ngIf="player.hasVoted">{{player.voteValue ? '+' : '-'}}
-      </span> 
+      <span *ngIf="player.hasVoted">{{player.voteValue ? 'Agree' : 'Disagree'}}
+      </span>
+      <span *ngIf="!player.hasVoted">Not Voted</span>
   </mat-cell>
   </ng-container>
 
@@ -58,19 +45,19 @@
   
   <!-- NumberOfCompanions -->
   <ng-container matColumnDef="numberOfCompanions">
-      <mat-header-cell *matHeaderCellDef>Number Of Companions</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>Companions</mat-header-cell>
       <mat-cell *matCellDef="let mission">{{mission.numberOfCompanions}}</mat-cell>
     </ng-container>
   
     <!-- NumberOfFailsToFailMission -->
   <ng-container matColumnDef="numberOfFailsToFailMission">
-    <mat-header-cell *matHeaderCellDef> Number of Failed Cards To Fail Mission </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>Fails</mat-header-cell>
     <mat-cell *matCellDef="let mission">{{mission.numberOfFailsToFailMission}}</mat-cell>
   </ng-container>
 
   <!-- IsSuccess -->
   <ng-container matColumnDef="missionSuccess">
-      <mat-header-cell *matHeaderCellDef>Mission Success </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>Success</mat-header-cell>
       <mat-cell *matCellDef="let mission"> 
         <span *ngIf="mission.isSuccess != null">{{mission.isSuccess ? '+' : '-'}}</span>
     </mat-cell>

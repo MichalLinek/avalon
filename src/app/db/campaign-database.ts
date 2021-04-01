@@ -110,11 +110,7 @@ export class CampaignDatabase {
         numberOfGood: 1,
         specialCharactersIds: [],
         missions: [
-            new Mission(1, 1, 1),
-            new Mission(2, 1, 1),
-            new Mission(3, 1, 1),
-            new Mission(4, 1, 1),
-            new Mission(5, 1, 1)
+            new Mission(1, 1, 1)
         ],
         excaliburEnabled: false,
         ladyOfTheLakeEnabled: false,

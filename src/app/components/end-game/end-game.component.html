@@ -1,2 +1,31 @@
-<div>{{win ? 'You have won' : 'You have lost'}}</div>
-<button style="width: 100%" mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button> 
+<mat-table [dataSource]="players" class="mat-elevation-z8 table-margin-padding">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let player"> {{player.userName}} </mat-cell>
+    </ng-container>
+    
+    <!-- Character -->
+    <ng-container matColumnDef="character">
+        <mat-header-cell *matHeaderCellDef> Character </mat-header-cell>
+        <mat-cell *matCellDef="let player"> {{player.characterCard.name}} </mat-cell>
+      </ng-container>
+    
+      <!-- Alignment -->
+      <ng-container matColumnDef="alignment">
+        <mat-header-cell *matHeaderCellDef> Alignment </mat-header-cell>
+        <mat-cell *matCellDef="let player"> {{translateEnum(player.characterCard.alignment)}} </mat-cell>
+      </ng-container>
+    
+    <!-- Score -->
+    <ng-container matColumnDef="score">
+        <mat-header-cell *matHeaderCellDef> Score </mat-header-cell>
+        <mat-cell *matCellDef="let player"> {{ getScoreForPlayer(player) }} </mat-cell>
+      </ng-container>
+    
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row [ngClass]="{'highlight': player.userName === getPlayerName()}" *matRowDef="let player; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+<button style="width: 100%; margin-top: 20px;" mat-raised-button (click)="goBack()" class="bright-purple-background">Back</button> 
+

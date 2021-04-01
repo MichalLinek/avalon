@@ -96,6 +96,10 @@ export class WebSocketService {
           observer.next(data);
         });
 
+        this.socket.on(MessageType.END_GAME_SUMMARY, (data) => {
+          observer.next(data);
+        });
+
         this.socket.on(MessageType.MISSION_VOTES_RESULT, (data) => {
           observer.next(data);
         });

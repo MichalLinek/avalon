@@ -20,7 +20,7 @@ mat-cell button.mat-button {
     padding-top: 20px;
 }
 
-.div-space-between div {
+.div-space-between > div {
     margin-bottom: 20px;
 }
 

@@ -40,6 +40,11 @@ mat-slider {
   width: 100%;
 }
 
+.mat-cell {
+  display: flex;
+  justify-content: center;
+}
+
 button.mat-raised-button {
     max-width: 400px;
     height: 60px;
@@ -52,6 +57,32 @@ button.mat-primary.mat-raised-button[disabled] {
 button.mat-primary.mat-raised-button {
   background-color: #622569;
   color: white;
+}
+
+mat-header-row {
+  background-color: lightgray;
+}
+
+mat-cell span {
+  font-size: 14px;
+}
+
+.mat-header-row mat-header-cell {
+  font-weight: 900;
+  display: flex;
+  justify-content: center;
+}
+
+snack-bar-container {
+  height: 60px;
+}
+
+.mat-simple-snackbar-action {
+  color: #b8a9c9;
+}
+
+snack-bar-container.mat-snack-bar-container {
+  padding: 22px 24px;
 }
 
 .mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]).cdk-keyboard-focused,
