@@ -1,13 +1,11 @@
 # BoardGame 'Avalon'
 The project is a mobile implementation of the famous BoardGame called "Avalon". 
-The application is divided into two parts server and client.
+The application consists of two parts - server and client.
 The connection between the two is based on the sockets.
 
-# Client Application
-Run "npm run run-client" in order to build a client in an angular app. By default application runs on http://localhost:4200.
-
-# Server Application
-Run "npm run run-server" in order to build a server based on Node.js technology. By default the server runs on http://localhost:5000.
+# How to run
+Execute "npm run heroku-postbuild" in order to build a server based on Node.js technology. By default the server runs on http://localhost:5000.
+To run the application execute "npm run start". 
 
 # Currently the application supports the following features:
 * Connecting to the server
