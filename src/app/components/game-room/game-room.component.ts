@@ -106,6 +106,8 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         }
         this.afterSelectingCompanions = false;
         this.IsVoteButtonActive = false;
+      } else if (msg.type === MessageType.PLAYER_DISCONNECTED) {
+        this.router.navigate([NavigationPaths.home]);
       } else {
         console.error('What kind of message is that ?');
         console.error(msg);

@@ -42,6 +42,8 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
             UserGlobal.room = this.room;
             this.router.navigate([NavigationPaths.waitingRoom]);
             this.notificationService.emitChange('The room has been created.');
+          } else if (msg.type === MessageType.PLAYER_DISCONNECTED) {
+            this.router.navigate([NavigationPaths.home]);
           }
           else
             this.notificationService.emitChange('The room with this name already exists.');

@@ -14,3 +14,4 @@ export { VotingFailResponse } from "./voting-fail-response.model";
 export { AllMissionsCompletedResponse } from "./all-missions-completed-response.model";
 export { MissionVotesResultResponse } from "./mission-votes-result-response.model";
 export { EndGameResultsResponse } from "./end-game-results-response.model";
+export { PlayerDisconnectedResponse } from "./player-disconnected-response.model";

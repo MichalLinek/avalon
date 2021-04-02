@@ -1,7 +1,7 @@
 import { MessageType, MissionResultType } from "../app/enums";
 import { GameRoom, GameRoomAvailability, Player } from "../app/models/game";
 import { GameRoomCreateRequest, InitGameRequestModel, JoinRoomRequestModel, LeaveRoomRequestModel, PlayerPlannedOnMissionRequestModel, StartVotingRequestModel, TeamVoteRequestModel, UserValidRequest, VoteMissionRequestModel, WaitingRomPlayerUpdateRequest } from "../app/models/requests";
-import { AllMissionsCompletedResponse, AvailableRoomsResponse, EndGameResultsResponse, GameDetailsResponse, GameRoomCreateResponse, GameStartResponse, InitGameResponse, JoinRoomResponse, MissionVotesResultResponse, PlayerPlannedOnMissionResponse, PlayersInRoomResponse, StartVotingResponse, TeamVoteRequestResponse, UserValidResponse, VotingFailResponse, VotingSuccessResponse } from "../app/models/responses";
+import { AllMissionsCompletedResponse, AvailableRoomsResponse, EndGameResultsResponse, GameDetailsResponse, GameRoomCreateResponse, GameStartResponse, InitGameResponse, JoinRoomResponse, MissionVotesResultResponse, PlayerDisconnectedResponse, PlayerPlannedOnMissionResponse, PlayersInRoomResponse, StartVotingResponse, TeamVoteRequestResponse, UserValidResponse, VotingFailResponse, VotingSuccessResponse } from "../app/models/responses";
 import { Game } from "./game";
 import { Socket } from 'socket.io';
 
@@ -74,8 +74,10 @@ export class Server {
             });
 
             socket.on(MessageType.CREATE_ROOM, (request: string) => {
-                let player = this.getPlayerFromSocketId(socket.id);
-                if (!player) return;
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let parsedRequest: GameRoomCreateRequest = JSON.parse(request);
                 const roomId = this.roomPrefix + parsedRequest.gameRoom.name;
                 let response: GameRoomCreateResponse = {
@@ -116,11 +118,14 @@ export class Server {
             });
 
             socket.on(MessageType.JOIN_ROOM, (request: string) => {
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let data: JoinRoomRequestModel = JSON.parse(request);
                 let roomNameWithPrefix = this.roomPrefix + data.roomId;
                 socket.join(roomNameWithPrefix);
-                let player = this.getPlayerFromSocketId(socket.id);
-                player!.roomId = roomNameWithPrefix;
+                player.roomId = roomNameWithPrefix;
                 let response: JoinRoomResponse = {
                     gameRoom: this.rooms.get(roomNameWithPrefix),
                     type: MessageType.JOIN_ROOM
@@ -130,20 +135,26 @@ export class Server {
             });
 
             socket.on(MessageType.LEAVE_ROOM, (request: string) => {
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let data: LeaveRoomRequestModel = JSON.parse(request);
                 let roomNameWithPrefix = this.roomPrefix + data.roomId;
                 socket.leave(roomNameWithPrefix);
-                let player = this.getPlayerFromSocketId(socket.id);
-                if (!player) return;
                 player.roomId = null;
                 player.ready = false;
+                player.hasVoted = false;
+                player.isGoingOnAMission = false;
                 this.refreshRoomInfo(null);
                 this.playerInRoomsChanged(roomNameWithPrefix);
             });
 
             socket.on(MessageType.GAME_START, (data) => {
-                let player = this.getPlayerFromSocketId(socket.id);
-                if (!player) return;
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let room = player.roomId;
                 let response: GameStartResponse = {
                     type: MessageType.GAME_START
@@ -153,11 +164,12 @@ export class Server {
             });
 
             socket.on(MessageType.WAITING_ROOM_PLAYER_UPDATE, (request) => {
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let data: WaitingRomPlayerUpdateRequest = JSON.parse(request);
                 let roomWithPrefix = this.roomPrefix + data.roomId;
-                let player = this.getPlayerFromSocketId(socket.id);
-                if (!player) return;
-
                 player.ready = data.ready;
                 this.playerInRoomsChanged(roomWithPrefix);
             });
@@ -168,6 +180,10 @@ export class Server {
             });
 
              socket.on(MessageType.INIT_GAME, (request: string) => {
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let requestData: InitGameRequestModel = JSON.parse(request);
                 let roomWithPrefix = this.roomPrefix + requestData.roomId;
 
@@ -177,8 +193,6 @@ export class Server {
                 for (let i = 0; i < sockets.length; i ++) {
                     players.push(this.getPlayerFromSocketId(sockets[i].id));
                 }
-
-                let player = this.getPlayerFromSocketId(socket.id);
 
                 let data: InitGameResponse = {
                     type: MessageType.INIT_GAME,
@@ -227,10 +241,12 @@ export class Server {
             });
 
             socket.on(MessageType.VOTE_FOR_TEAM, (request: string) => {
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let data: TeamVoteRequestModel = JSON.parse(request);
                 if (!this.activeUsers.has(socket.id)) return;
-
-                let player = this.getPlayerFromSocketId(socket.id);
                 player.hasVoted = true;
                 player.voteValue = data.voteValue;
 
@@ -242,7 +258,6 @@ export class Server {
                     player: player
                 }
                 this.io.sockets.in(roomWithPrefix).emit(MessageType.VOTE_FOR_TEAM, response);
-
 
                 let users: Socket[] = this.getUsersInRoom(roomWithPrefix);
                 let players: Player[] = [];
@@ -291,8 +306,11 @@ export class Server {
             });
 
             socket.on(MessageType.VOTE_MISSION, (request: string) => {
+                let player = this.checkForDisconnectedPlayer(socket);
+                if (!player) {
+                    return;
+                }
                 let data: VoteMissionRequestModel = JSON.parse(request);
-                let player = this.getPlayerFromSocketId(socket.id);
                 let room = this.rooms.get(player.roomId);
                 let mission = room.campaign.missions[room.campaign.currentMission];
                 
@@ -401,15 +419,6 @@ export class Server {
         }
     }
 
-    public getSocketByUserName(userName) {
-        var clients = this.io.sockets.clients; 
-        for (var client in clients) {
-            if (client["userName"] === userName) {
-                return client;
-            }
-        }
-    }
-
     public refreshRoomInfo(socket: Socket) {
         var rooms: GameRoomAvailability[] = [];
         for (var roomName in this.io.sockets.adapter.rooms) {
@@ -444,5 +453,17 @@ export class Server {
                 socketToInform.emit(MessageType.AVAILABLE_ROOMS, sendRoomsResponse);
             }
         });
+    }
+
+    private checkForDisconnectedPlayer(socket: Socket): Player {
+        let player = this.getPlayerFromSocketId(socket.id);
+        if (!player) {
+            let playerDisconnected: PlayerDisconnectedResponse = {
+                type: MessageType.PLAYER_DISCONNECTED
+            }
+            socket.emit(MessageType.PLAYER_DISCONNECTED, playerDisconnected);
+            return null;
+        }
+        return player;
     }
 }

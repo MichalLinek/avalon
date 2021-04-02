@@ -23,5 +23,6 @@ export enum MessageType {
     END_GAME = 'endGame',
     WAITING_ROOM_PLAYER_UPDATE = 'waitingRoomPlayerUpdate',
     WAITING_ROOM_LEAVE_ROOM = 'waitingRoomLeaveRoom',
-    END_GAME_SUMMARY = 'endGameSummary'
+    END_GAME_SUMMARY = 'endGameSummary',
+    PLAYER_DISCONNECTED = 'playerDisconnected'
 }

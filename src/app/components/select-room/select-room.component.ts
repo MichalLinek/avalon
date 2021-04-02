@@ -31,6 +31,9 @@ export class SelectRoomComponent implements OnInit, OnDestroy {
         let data = msg as AvailableRoomsResponse;
         this.availableRooms = data.rooms
       }
+      else if (msg.type === MessageType.PLAYER_DISCONNECTED) {
+        this.router.navigate([NavigationPaths.home]);
+      }
       (error) => {};
     });
     this.chat.sendRequestForRooms();

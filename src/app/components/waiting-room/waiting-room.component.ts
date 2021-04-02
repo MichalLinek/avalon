@@ -34,6 +34,8 @@ export class WaitingRoomComponent implements OnInit, OnDestroy {
         this.players = request.players;
         this.maxLimit = UserGlobal.room.campaign.numberOfPlayers;
         this.availablePlayers = request.players.length;
+      } else if (msg.type === MessageType.PLAYER_DISCONNECTED) {
+        this.router.navigate([NavigationPaths.home]);
       }
     }), (error) => {};
 
